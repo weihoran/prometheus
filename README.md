@@ -10,19 +10,20 @@ This module makes use of the
 | Name | Version |
 |------|---------|
 | terraform | >= 0.12 |
-| helm | >= 1.0 |
+| helm | >= 3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
 | helm | >= 1.0 |
-| template | n/a |
 
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+|------|-------------|------|---------|:-----:|
+| prometheus\_remote\_read\_api\_url | Prometheus remote read URL | `string` | n/a | yes |
+| prometheus\_remote\_write\_api\_url | Prometheus remote write URL | `string` | n/a | yes |
 | alert\_relabel\_configs | Adds option to add alert\_relabel\_configs to avoid duplicate alerts in alertmanager useful in H/A prometheus with different external labels but the same alerts | `map` | `{}` | no |
 | alertmanager\_affinity | Affinity for alertmanager pods | `map` | `{}` | no |
 | alertmanager\_annotations | Annotations for Alertmanager pods | `map` | `{}` | no |
@@ -57,7 +58,7 @@ This module makes use of the
 | alertmanager\_replica | Number of replicas for AlertManager | `number` | `1` | no |
 | alertmanager\_repository | Docker repository for Alert Manager | `string` | `"prom/alertmanager"` | no |
 | alertmanager\_resources | Resources for alertmanager | `map` | `{}` | no |
-| alertmanager\_security\_context | Security context for alertmanager pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `alertmanager_security_context_json` instead | `map` | `{}` | no |
+| alertmanager\_security\_context | Security context for alertmanager pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `alertmanager_security_context_json` instead | `map` | `{}` | no |
 | alertmanager\_security\_context\_json | JSON string for security context for alertmanager pods | `string` | `""` | no |
 | alertmanager\_service\_account | Name of the service account for AlertManager. Defaults to component's fully qualified name. | `string` | `""` | no |
 | alertmanager\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
@@ -111,7 +112,7 @@ This module makes use of the
 | kube\_state\_metrics\_replica | Number of replicas for Kube State Metrics | `number` | `1` | no |
 | kube\_state\_metrics\_repository | Docker repository for Kube State Metrics | `string` | `"quay.io/coreos/kube-state-metrics"` | no |
 | kube\_state\_metrics\_resources | Resources for Kube State Metrics | `map` | `{}` | no |
-| kube\_state\_metrics\_security\_context | Security context for kube\_state\_metrics pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `kube_state_metrics_security_context_json` instead | `map` | `{}` | no |
+| kube\_state\_metrics\_security\_context | Security context for kube\_state\_metrics pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `kube_state_metrics_security_context_json` instead | `map` | `{}` | no |
 | kube\_state\_metrics\_security\_context\_json | JSON string for security context for kube\_state\_metrics pods | `string` | `""` | no |
 | kube\_state\_metrics\_service\_account | Name of the service account for kubeStateMetrics. Defaults to component's fully qualified name. | `string` | `""` | no |
 | kube\_state\_metrics\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
@@ -141,7 +142,7 @@ This module makes use of the
 | node\_exporter\_replica | Number of replicas for Node Exporter | `number` | `1` | no |
 | node\_exporter\_repository | Docker repository for Node Exporter | `string` | `"prom/node-exporter"` | no |
 | node\_exporter\_resources | Resources for node\_exporter | `map` | `{}` | no |
-| node\_exporter\_security\_context | Security context for node\_exporter pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `node_exporter_security_context_json` instead | `map` | `{}` | no |
+| node\_exporter\_security\_context | Security context for node\_exporter pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `node_exporter_security_context_json` instead | `map` | `{}` | no |
 | node\_exporter\_security\_context\_json | JSON string for security context for node\_exporter pods | `string` | `""` | no |
 | node\_exporter\_service\_account | Name of the service account for nodeExporter. Defaults to component's fully qualified name. | `string` | `""` | no |
 | node\_exporter\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
@@ -179,7 +180,7 @@ This module makes use of the
 | pushgateway\_replica | Number of replicas for pushgateway | `number` | `1` | no |
 | pushgateway\_repository | Docker repository for Pushgateway | `string` | `"prom/pushgateway"` | no |
 | pushgateway\_resources | Resources for pushgateway | `map` | `{}` | no |
-| pushgateway\_security\_context | Security context for pushgateway pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `pushgateway_security_context_json` instead | `map` | `{}` | no |
+| pushgateway\_security\_context | Security context for pushgateway pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `pushgateway_security_context_json` instead | `map` | `{}` | no |
 | pushgateway\_security\_context\_json | JSON string for security context for pushgateway pods | `string` | `""` | no |
 | pushgateway\_service\_account | Name of the service account for pushgateway. Defaults to component's fully qualified name. | `string` | `""` | no |
 | pushgateway\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
@@ -243,7 +244,7 @@ This module makes use of the
 | server\_rules | Prometheus server rules entries in YAML | `string` | `"[]\n# - name: k8s_health\n#   rules:\n#     - record: k8s_container_oom\n#       expr: increase(kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\"}[2m]) and on(pod) increase(kube_pod_container_status_restarts_total[2m])\n"` | no |
 | server\_scrape\_interval | How frequently to scrape targets by default | `string` | `"1m"` | no |
 | server\_scrape\_timeout | How long until a scrape request times out | `string` | `"10s"` | no |
-| server\_security\_context | Security context for server pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `server_security_context_json` instead | `map` | `{}` | no |
+| server\_security\_context | Security context for server pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `server_security_context_json` instead | `map` | `{}` | no |
 | server\_security\_context\_json | JSON string for security context for server pods | `string` | `""` | no |
 | server\_service\_account | Name of the service account for server. Defaults to component's fully qualified name. | `string` | `""` | no |
 | server\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
@@ -261,117 +262,6 @@ This module makes use of the
 | server\_tag | Tag for server Docker Image | `string` | `"v2.8.1"` | no |
 | server\_termination\_grace\_seconds | Prometheus server pod termination grace period | `string` | `"300"` | no |
 | server\_tolerations | Tolerations for server | `list` | `[]` | no |
-| vm\_agent\_affinity | Affinity for VictoriaMetrics Agent server pods | `map` | `{}` | no |
-| vm\_agent\_chart | Chart for VictoriaMetrics Agent | `string` | `"victoria-metrics-agent"` | no |
-| vm\_agent\_chart\_repository\_url | Chart Repository URL for VictoriaMetrics Agent | `string` | `"https://victoriametrics.github.io/helm-charts/"` | no |
-| vm\_agent\_chart\_version | Chart version for VictoriaMetrics Agent | `string` | `"0.4.7"` | no |
-| vm\_agent\_enabled | Deploy VictoriaMetrics Agent | `bool` | `false` | no |
-| vm\_agent\_extra\_args | Additional VictoriaMetrics Agent container arguments | `map` | `{}` | no |
-| vm\_agent\_extra\_volume\_mounts | Extra volume mounts for VictoriaMetrics Agent | `list` | `[]` | no |
-| vm\_agent\_extra\_volumes | Extra volumes for VictoriaMetrics Agent | `list` | `[]` | no |
-| vm\_agent\_helm\_release\_max\_history | The maximum number of history releases to keep track for the VM helm release | `number` | `20` | no |
-| vm\_agent\_image\_repository | Image repository for VictoriaMetrics Agent server | `string` | `"victoriametrics/vmagent"` | no |
-| vm\_agent\_image\_tag | Image tag for VictoriaMetrics Agent server | `string` | `"v1.37.4"` | no |
-| vm\_agent\_namespace | Namespace for VictoriaMetrics Agent | `string` | `"core"` | no |
-| vm\_agent\_node\_selector | Node selector for VictoriaMetrics Agent server pods | `map` | `{}` | no |
-| vm\_agent\_pod\_annotations | Annotations for VictoriaMetrics Agent server pods | `map` | `{}` | no |
-| vm\_agent\_release\_name | Helm release name for VictoriaMetrics Agent | `string` | `"victoria-metrics-agent"` | no |
-| vm\_agent\_replica\_count | Number of replicas for VictoriaMetrics Agent server | `number` | `1` | no |
-| vm\_agent\_resources | Resources for VictoriaMetrics Agent server | `map` | `{}` | no |
-| vm\_agent\_security\_context | Security context for VictoriaMetrics Agent server pods defined as a map which will be serialized to JSON. | `map` | `{}` | no |
-| vm\_agent\_tolerations | Tolerations for VictoriaMetrics Agent server | `list` | `[]` | no |
-| vm\_alert\_affinity | Affinity for VictoriaMetrics Alert server pods | `map` | `{}` | no |
-| vm\_alert\_chart | Chart for VictoriaMetrics Alert | `string` | `"victoria-metrics-alert"` | no |
-| vm\_alert\_chart\_repository\_url | Chart Repository URL for VictoriaMetrics Alert | `string` | `"https://victoriametrics.github.io/helm-charts/"` | no |
-| vm\_alert\_chart\_version | Chart version for VictoriaMetrics Alert | `string` | `"0.0.16"` | no |
-| vm\_alert\_enabled | Deploy VictoriaMetrics Alert | `bool` | `false` | no |
-| vm\_alert\_extra\_args | Additional VictoriaMetrics Alert container arguments | `map` | `{}` | no |
-| vm\_alert\_helm\_release\_max\_history | The maximum number of history releases to keep track for the VM helm release | `number` | `20` | no |
-| vm\_alert\_image\_repository | Image repository for VictoriaMetrics Alert server | `string` | `"victoriametrics/vmalert"` | no |
-| vm\_alert\_image\_tag | Image tag for VictoriaMetrics Alert server | `string` | `"v1.37.4"` | no |
-| vm\_alert\_namespace | Namespace for VictoriaMetrics Alert | `string` | `"core"` | no |
-| vm\_alert\_node\_selector | Node selector for VictoriaMetrics Alert server pods | `map` | `{}` | no |
-| vm\_alert\_pod\_annotations | Annotations for VictoriaMetrics Alert server pods | `map` | `{}` | no |
-| vm\_alert\_release\_name | Helm release name for VictoriaMetrics Alert | `string` | `"victoria-metrics-alert"` | no |
-| vm\_alert\_replica\_count | Number of replicas for VictoriaMetrics Alert server | `number` | `1` | no |
-| vm\_alert\_resources | Resources for VictoriaMetrics Alert server | `map` | `{}` | no |
-| vm\_alert\_security\_context | Security context for VictoriaMetrics Alert server pods defined as a map which will be serialized to JSON. | `map` | `{}` | no |
-| vm\_alert\_service\_annotations | Annotations for VictoriaMetrics Alert server service | `map` | `{}` | no |
-| vm\_alert\_service\_labels | Labels for VictoriaMetrics Alert server service | `map` | `{}` | no |
-| vm\_alert\_service\_port | Service port for VictoriaMetrics Alert server | `number` | `8880` | no |
-| vm\_alert\_service\_type | Type of service for VictoriaMetrics Alert server | `string` | `"ClusterIP"` | no |
-| vm\_alert\_tolerations | Tolerations for VictoriaMetrics Alert server | `list` | `[]` | no |
-| vm\_chart | Chart for VictoriaMetrics | `string` | `"victoria-metrics-cluster"` | no |
-| vm\_chart\_repository\_url | Chart Repository URL for VictoriaMetrics | `string` | `"https://victoriametrics.github.io/helm-charts/"` | no |
-| vm\_chart\_version | Chart version for VictoriaMetrics | `string` | `"0.5.15"` | no |
-| vm\_enabled | Deploy VictoriaMetrics cluster | `bool` | `false` | no |
-| vm\_helm\_release\_max\_history | The maximum number of history releases to keep track for the VM helm release | `number` | `20` | no |
-| vm\_insert\_affinity | Affinity for VictoriaMetrics Insert server pods | `map` | `{}` | no |
-| vm\_insert\_enabled | Deploy VictoriaMetrics Insert | `bool` | `true` | no |
-| vm\_insert\_extra\_args | Additional VictoriaMetrics Insert container arguments | `map` | `{}` | no |
-| vm\_insert\_image\_repository | Image repository for VictoriaMetrics Insert server | `string` | `"victoriametrics/vminsert"` | no |
-| vm\_insert\_image\_tag | Image tag for VictoriaMetrics Insert server | `string` | `"v1.37.4-cluster"` | no |
-| vm\_insert\_node\_selector | Node selector for VictoriaMetrics Insert server pods | `map` | `{}` | no |
-| vm\_insert\_pod\_annotations | Annotations for VictoriaMetrics Insert server pods | `map` | `{}` | no |
-| vm\_insert\_priority\_class\_name | Priority Class Name for VictoriaMetrics Insert server | `string` | `""` | no |
-| vm\_insert\_replica\_count | Number of replicas for VictoriaMetrics Insert server | `number` | `2` | no |
-| vm\_insert\_resources | Resources for VictoriaMetrics Insert server | `map` | `{}` | no |
-| vm\_insert\_security\_context | Security context for VictoriaMetrics Insert server pods defined as a map which will be serialized to JSON. | `map` | `{}` | no |
-| vm\_insert\_service\_annotations | Annotations for VictoriaMetrics Insert server service | `map` | `{}` | no |
-| vm\_insert\_service\_labels | Labels for VictoriaMetrics Insert server service | `map` | `{}` | no |
-| vm\_insert\_service\_port | Service port for VictoriaMetrics Insert server | `number` | `8480` | no |
-| vm\_insert\_service\_type | Type of service for VictoriaMetrics Insert server | `string` | `"ClusterIP"` | no |
-| vm\_insert\_tolerations | Tolerations for VictoriaMetrics Insert server | `list` | `[]` | no |
-| vm\_namespace | Namespace for VictoriaMetrics | `string` | `"core"` | no |
-| vm\_psp\_enabled | Enable PodSecurityPolicy in VictoriaMetrics | `bool` | `true` | no |
-| vm\_release\_name | Helm release name for VictoriaMetrics | `string` | `"victoria-metrics-cluster"` | no |
-| vm\_select\_affinity | Affinity for VictoriaMetrics Select server pods | `map` | `{}` | no |
-| vm\_select\_enabled | Deploy VictoriaMetrics Select | `bool` | `true` | no |
-| vm\_select\_extra\_args | Additional VictoriaMetrics Select container arguments | `map` | `{}` | no |
-| vm\_select\_image\_repository | Image repository for VictoriaMetrics Select server | `string` | `"victoriametrics/vmselect"` | no |
-| vm\_select\_image\_tag | Image tag for VictoriaMetrics Select server | `string` | `"v1.37.4-cluster"` | no |
-| vm\_select\_ingress\_annotations | Annotations for VictoriaMetrics Select server ingress | `map` | `{}` | no |
-| vm\_select\_ingress\_enabled | Enable ingress for VictoriaMetrics Select server | `bool` | `false` | no |
-| vm\_select\_ingress\_hosts | Ingress hosts for VictoriaMetrics Select server | `list` | `[]` | no |
-| vm\_select\_node\_selector | Node selector for VictoriaMetrics Select server pods | `map` | `{}` | no |
-| vm\_select\_pod\_annotations | Annotations for VictoriaMetrics Select server pods | `map` | `{}` | no |
-| vm\_select\_priority\_class\_name | Priority Class Name for VictoriaMetrics Select server | `string` | `""` | no |
-| vm\_select\_pv\_access\_modes | VictoriaMetrics Select server data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
-| vm\_select\_pv\_annotations | Annotations for VictoriaMetrics Select server PV | `map` | `{}` | no |
-| vm\_select\_pv\_enabled | Enable persistent volume on VictoriaMetrics Select server | `bool` | `true` | no |
-| vm\_select\_pv\_size | VictoriaMetrics Select server data Persistent Volume size | `string` | `"8Gi"` | no |
-| vm\_select\_replica\_count | Number of replicas for VictoriaMetrics Select server | `number` | `2` | no |
-| vm\_select\_resources | Resources for VictoriaMetrics Select server | `map` | `{}` | no |
-| vm\_select\_security\_context | Security context for VictoriaMetrics Select server pods defined as a map which will be serialized to JSON | `map` | `{}` | no |
-| vm\_select\_service\_annotations | Annotations for VictoriaMetrics Select server service | `map` | `{}` | no |
-| vm\_select\_service\_labels | Labels for VictoriaMetrics Select server service | `map` | `{}` | no |
-| vm\_select\_service\_port | Service port for VictoriaMetrics Select server | `number` | `8481` | no |
-| vm\_select\_service\_type | Type of service for VictoriaMetrics Select server | `string` | `"ClusterIP"` | no |
-| vm\_select\_tolerations | Tolerations for VictoriaMetrics Select server | `list` | `[]` | no |
-| vm\_service\_account\_annotations | Service Account Annotations for VictoriaMetrics | `map` | `{}` | no |
-| vm\_storage\_affinity | Affinity for VictoriaMetrics Storage server pods | `map` | `{}` | no |
-| vm\_storage\_enabled | Deploy VictoriaMetrics Storage | `bool` | `true` | no |
-| vm\_storage\_extra\_args | Additional VictoriaMetrics Storage container arguments | `map` | `{}` | no |
-| vm\_storage\_image\_repository | Image repository for VictoriaMetrics Storage server | `string` | `"victoriametrics/vmstorage"` | no |
-| vm\_storage\_image\_tag | Image tag for VictoriaMetrics Storage server | `string` | `"v1.37.4-cluster"` | no |
-| vm\_storage\_node\_selector | Node selector for VictoriaMetrics Storage server pods | `map` | `{}` | no |
-| vm\_storage\_pod\_annotations | Annotations for VictoriaMetrics Storage server pods | `map` | `{}` | no |
-| vm\_storage\_priority\_class\_name | Priority Class Name for VictoriaMetrics Storage server | `string` | `""` | no |
-| vm\_storage\_pv\_access\_modes | VictoriaMetrics Storage server data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
-| vm\_storage\_pv\_annotations | Annotations for VictoriaMetrics Storage server PV | `map` | `{}` | no |
-| vm\_storage\_pv\_enabled | Enable persistent volume on VictoriaMetrics Storage server | `bool` | `true` | no |
-| vm\_storage\_pv\_size | VictoriaMetrics Storage server data Persistent Volume size | `string` | `"8Gi"` | no |
-| vm\_storage\_replica\_count | Number of replicas for VictoriaMetrics Storage server | `number` | `2` | no |
-| vm\_storage\_resources | Resources for VictoriaMetrics Storage server | `map` | `{}` | no |
-| vm\_storage\_retention\_period | VictoriaMetrics Storage data retention period in months | `number` | `1` | no |
-| vm\_storage\_security\_context | Security context for VictoriaMetrics Storage server pods defined as a map which will be serialized to JSON | `map` | `{}` | no |
-| vm\_storage\_service\_annotations | Annotations for VictoriaMetrics Storage server service | `map` | `{}` | no |
-| vm\_storage\_service\_labels | Labels for VictoriaMetrics Storage server service | `map` | `{}` | no |
-| vm\_storage\_service\_port | Service port for VictoriaMetrics Storage server | `number` | `8482` | no |
-| vm\_storage\_termination\_grace\_period\_seconds | VictoriaMetrics Select server pods' termination grace period in seconds | `number` | `60` | no |
-| vm\_storage\_tolerations | Tolerations for VictoriaMetrics Storage server | `list` | `[]` | no |
-| vm\_storage\_vm\_insert\_port | Service port for for accepting connections from vminsert | `number` | `8400` | no |
-| vm\_storage\_vm\_select\_port | Service port for for accepting connections from vmselect | `number` | `8401` | no |
 
 ## Outputs
 
@@ -379,5 +269,3 @@ This module makes use of the
 |------|-------------|
 | prometheus\_alerts\_api\_url | Prometheus query API URL: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries |
 | prometheus\_query\_api\_url | Prometheus query API URL: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries |
-| prometheus\_remote\_read\_api\_url | Prometheus Remote Read API URL: https://prometheus.io/docs/prometheus/latest/storage/#remote-storage-integrations |
-| prometheus\_remote\_write\_api\_url | Prometheus Remote Write API URL: https://prometheus.io/docs/prometheus/latest/storage/#remote-storage-integrations |
