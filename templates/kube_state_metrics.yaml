@@ -14,6 +14,11 @@ autosharding:
 
 replicas: ${replica}
 
+# List of additional cli arguments to configure kube-state-metrics
+# for example: --enable-gzip-encoding, --log-file, etc.
+# all the possible args can be found here: https://github.com/kubernetes/kube-state-metrics/blob/master/docs/cli-arguments.md
+extraArgs: ${extra_args}
+
 service:
   port: ${service_port}
   # Default to clusterIP for backward compatibility
@@ -102,7 +107,7 @@ priorityClassName: ${priority_class_name}
 podDisruptionBudget: ${pdb}
 
 # Available collectors for kube-state-metrics. By default all available
-# collectors are enabled.
+# resources are enabled.
 collectors: ${collectors}
   # certificatesigningrequests: true
   # configmaps: true
@@ -133,8 +138,8 @@ collectors: ${collectors}
   # verticalpodautoscalers: true
   # volumeattachments: true
 
-# Namespace to be enabled for collecting resources. By default all namespaces are collected.
-namespace: ${collection_namespace}
+# Namespaces to be enabled for collecting resources. By default all namespaces are collected.
+namespaces: ${collection_namespace}
 
 ## Override the deployment namespace
 ##
