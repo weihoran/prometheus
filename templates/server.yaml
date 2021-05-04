@@ -46,12 +46,17 @@ server:
   ##       key: username
   env: ${extra_env}
 
-  ## This flag controls access to the administrative HTTP API which includes functionality such as deleting time
-  ## series. This is disabled by default.
-  enableAdminApi: ${enable_admin_api}
-
-  ## This flag controls BD locking
-  skipTSDBLock: ${skip_tsdb_lock}
+  extraFlags: ${extra_flags}
+    # - web.enable-lifecycle
+    ## web.enable-admin-api flag controls access to the administrative HTTP API which includes functionality such as
+    ## deleting time series. This is disabled by default.
+    # - web.enable-admin-api
+    ##
+    ## storage.tsdb.no-lockfile flag controls BD locking
+    # - storage.tsdb.no-lockfile
+    ##
+    ## storage.tsdb.wal-compression flag enables compression of the write-ahead log (WAL)
+    # - storage.tsdb.wal-compression
 
   ## Path to a configuration file on prometheus server container FS
   configPath: /etc/config/prometheus.yml

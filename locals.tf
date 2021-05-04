@@ -5,6 +5,8 @@ locals {
   prometheus_query_api_url  = coalesce(var.prometheus_remote_read_api_url, local.prometheus_server_url)
   prometheus_alerts_api_url = local.prometheus_server_url
 
+  server_extra_flags = distinct(concat(var.server_extra_flags, ["web.enable-lifecycle"]))
+
   self_scrape_config = [
     {
       job_name = "prometheus"

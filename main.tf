@@ -276,8 +276,7 @@ locals {
     pv_existing_claim = var.server_pv_existing_claim
     pv_size           = var.server_pv_size
 
-    enable_admin_api    = var.server_enable_admin_api
-    skip_tsdb_lock      = var.server_skip_tsdb_lock
+    extra_flags         = jsonencode(local.server_extra_flags)
     scrape_interval     = var.server_scrape_interval
     scrape_timeout      = var.server_scrape_timeout
     evaluation_interval = var.server_evaluation_interval

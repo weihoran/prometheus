@@ -1205,14 +1205,9 @@ variable "server_base_url" {
   default     = ""
 }
 
-variable "server_enable_admin_api" {
-  description = "Enable Admin API for server"
-  default     = "false"
-}
-
-variable "server_skip_tsdb_lock" {
-  description = "Disable TSDB locking for the server"
-  default     = "false"
+variable "server_extra_flags" {
+  description = "Additional flags to control Prometheus server behaviour."
+  default     = []
 }
 
 variable "server_scrape_interval" {
