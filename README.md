@@ -94,7 +94,7 @@ This module makes use of the
 | kube\_state\_metrics\_autosharding | If set to true, this will deploy kube-state-metrics as a StatefulSet and the data<br>will be automatically sharded across <.Values.replicas> pods using the built-in<br>autodiscovery feature: https://github.com/kubernetes/kube-state-metrics#automated-sharding<br>This is an experimental feature and there are no stability guarantees. | `bool` | `false` | no |
 | kube\_state\_metrics\_chart\_name | Helm chart name to provision | `string` | `"kube-state-metrics"` | no |
 | kube\_state\_metrics\_chart\_namespace | Namespace to install the chart into | `string` | `"default"` | no |
-| kube\_state\_metrics\_chart\_repository | Helm repository for the chart | `string` | `"stable"` | no |
+| kube\_state\_metrics\_chart\_repository | Helm repository for the chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
 | kube\_state\_metrics\_chart\_version | Version of Chart to install. Set to empty to install the latest version | `string` | `""` | no |
 | kube\_state\_metrics\_collection\_namespace | Specific namespaces to collect metrics for | `string` | `""` | no |
 | kube\_state\_metrics\_collectors | Collectors for Kube state metrics | `map` | <pre>{<br>  "certificatesigningrequests": true,<br>  "configmaps": true,<br>  "cronjobs": true,<br>  "daemonsets": true,<br>  "deployments": true,<br>  "endpoints": true,<br>  "horizontalpodautoscalers": true,<br>  "ingresses": true,<br>  "jobs": true,<br>  "limitranges": true,<br>  "mutatingwebhookconfigurations": true,<br>  "namespaces": true,<br>  "networkpolicies": true,<br>  "nodes": true,<br>  "persistentvolumeclaims": true,<br>  "persistentvolumes": true,<br>  "poddisruptionbudgets": true,<br>  "pods": true,<br>  "replicasets": true,<br>  "replicationcontrollers": true,<br>  "resourcequotas": true,<br>  "secrets": true,<br>  "services": true,<br>  "statefulsets": true,<br>  "storageclasses": true,<br>  "validatingwebhookconfigurations": true,<br>  "verticalpodautoscalers": true,<br>  "volumeattachments": true<br>}</pre> | no |
@@ -110,7 +110,7 @@ This module makes use of the
 | kube\_state\_metrics\_pull\_policy | Image pull policy for Kube State Metrics | `string` | `"IfNotPresent"` | no |
 | kube\_state\_metrics\_release\_name | Helm release name for Kube State Metrics | `string` | `"kube-state-metrics"` | no |
 | kube\_state\_metrics\_replica | Number of replicas for Kube State Metrics | `number` | `1` | no |
-| kube\_state\_metrics\_repository | Docker repository for Kube State Metrics | `string` | `"quay.io/coreos/kube-state-metrics"` | no |
+| kube\_state\_metrics\_repository | Docker repository for Kube State Metrics | `string` | `"k8s.gcr.io/kube-state-metrics/kube-state-metrics"` | no |
 | kube\_state\_metrics\_resources | Resources for Kube State Metrics | `map` | `{}` | no |
 | kube\_state\_metrics\_security\_context | Security context for kube\_state\_metrics pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `kube_state_metrics_security_context_json` instead | `map` | `{}` | no |
 | kube\_state\_metrics\_security\_context\_json | JSON string for security context for kube\_state\_metrics pods | `string` | `""` | no |
@@ -121,7 +121,7 @@ This module makes use of the
 | kube\_state\_metrics\_service\_lb\_ip | Load Balancer IP for Kube State Metrics service | `string` | `""` | no |
 | kube\_state\_metrics\_service\_port | Service port for Kube State Metrics | `number` | `80` | no |
 | kube\_state\_metrics\_service\_type | Type of service for Kube State Metrics | `string` | `"ClusterIP"` | no |
-| kube\_state\_metrics\_tag | Tag for Kube State Metrics Docker Image | `string` | `"v1.5.0"` | no |
+| kube\_state\_metrics\_tag | Tag for Kube State Metrics Docker Image | `string` | `"v2.0.0"` | no |
 | kube\_state\_metrics\_tolerations | Tolerations for Kube State Metrics | `list` | `[]` | no |
 | max\_history | Max History for Helm | `number` | `20` | no |
 | node\_exporter\_annotations | Annotations for Node Exporter pods | `map` | `{}` | no |
@@ -205,12 +205,12 @@ This module makes use of the
 | server\_config\_override | Overriding the Prometheus server config file in YAML | `string` | `""` | no |
 | server\_data\_retention | Prometheus data retention period (i.e 360h) | `string` | `""` | no |
 | server\_enable | Deploy Prometheus Server | `string` | `"true"` | no |
-| server\_enable\_admin\_api | Enable Admin API for server | `string` | `"false"` | no |
 | server\_enable\_service\_links | EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links. | `bool` | `true` | no |
 | server\_evaluation\_interval | How frequently to evaluate rules | `string` | `"1m"` | no |
 | server\_extra\_args | Extra arguments for server container | `map` | `{}` | no |
 | server\_extra\_configmap\_mounts | Additional Prometheus server ConfigMap mounts | `list` | `[]` | no |
 | server\_extra\_env | Extra environment variables for server container | `map` | `{}` | no |
+| server\_extra\_flags | Additional flags to control Prometheus server behaviour. | `list` | `[]` | no |
 | server\_extra\_host\_path\_mounts | Additional Prometheus server hostPath mounts | `list` | `[]` | no |
 | server\_extra\_secret\_mounts | Extra secret mounts for server | `list` | `[]` | no |
 | server\_extra\_volume\_mounts | Additional Prometheus server Volume mounts | `list` | `[]` | no |
@@ -257,7 +257,6 @@ This module makes use of the
 | server\_service\_port | Service port for server | `number` | `9091` | no |
 | server\_service\_type | Type of service for server | `string` | `"ClusterIP"` | no |
 | server\_sidecar\_containers | Sidecar containers for server | `list` | `[]` | no |
-| server\_skip\_tsdb\_lock | Disable TSDB locking for the server | `string` | `"false"` | no |
 | server\_statefulset\_annotations | Annotations for server StatefulSet | `map` | `{}` | no |
 | server\_tag | Tag for server Docker Image | `string` | `"v2.8.1"` | no |
 | server\_termination\_grace\_seconds | Prometheus server pod termination grace period | `string` | `"300"` | no |
