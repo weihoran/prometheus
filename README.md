@@ -18,253 +18,262 @@ This module makes use of the
 |------|---------|
 | helm | >= 1.0 |
 
+## Modules
+
+No modules.
+
+## Resources
+
+| Name | Type |
+|------|------|
+| [helm_release.kube_state_metrics](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.node_exporter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+| [helm_release.prometheus](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
+
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:-----:|
-| prometheus\_remote\_read\_api\_url | Prometheus remote read URL | `string` | n/a | yes |
-| prometheus\_remote\_write\_api\_url | Prometheus remote write URL | `string` | n/a | yes |
-| alert\_relabel\_configs | Adds option to add alert\_relabel\_configs to avoid duplicate alerts in alertmanager useful in H/A prometheus with different external labels but the same alerts | `map` | `{}` | no |
-| alertmanager\_affinity | Affinity for alertmanager pods | `map` | `{}` | no |
-| alertmanager\_annotations | Annotations for Alertmanager pods | `map` | `{}` | no |
-| alertmanager\_base\_url | External URL which can access alertmanager | `string` | `"/"` | no |
-| alertmanager\_config\_file\_name | The configuration file name to be loaded to alertmanager Must match the key within configuration loaded from ConfigMap/Secret | `string` | `"alertmanager.yml"` | no |
-| alertmanager\_config\_from\_secret | The name of a secret in the same kubernetes namespace which contains the Alertmanager config Defining configFromSecret will cause templates/alertmanager-configmap.yaml to NOT generate a ConfigMap resource | `string` | `""` | no |
-| alertmanager\_config\_map\_override\_name | ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName} Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml to NOT generate a ConfigMap resource | `string` | `""` | no |
-| alertmanager\_enable | Enable Alert manager | `string` | `"true"` | no |
-| alertmanager\_extra\_args | Extra arguments for Alertmanager container | `map` | `{}` | no |
-| alertmanager\_extra\_env | Extra environment variables for Alertmanager container | `map` | `{}` | no |
-| alertmanager\_extra\_secret\_mounts | Defines additional mounts with secrets. Secrets must be manually created in the namespace. | `list` | `[]` | no |
-| alertmanager\_files | Additional ConfigMap entries for Alertmanager in YAML string | `string` | `"alertmanager.yml:\n  global: {}\n    # slack_api_url: ''\n\n  receivers:\n    - name: default-receiver\n      # slack_configs:\n      #  - channel: '@you'\n      #    send_resolved: true\n\n  route:\n    group_wait: 10s\n    group_interval: 5m\n    receiver: default-receiver\n    repeat_interval: 3h\n"` | no |
-| alertmanager\_headless\_annotations | Annotations for alertmanager StatefulSet headless service | `map` | `{}` | no |
-| alertmanager\_headless\_labels | Labels for alertmanager StatefulSet headless service | `map` | `{}` | no |
-| alertmanager\_ingress\_annotations | Annotations for Alertmanager ingress | `map` | `{}` | no |
-| alertmanager\_ingress\_enabled | Enable ingress for Alertmanager | `string` | `"false"` | no |
-| alertmanager\_ingress\_extra\_labels | Additional labels for Alertmanager ingress | `map` | `{}` | no |
-| alertmanager\_ingress\_hosts | List of Hosts for Alertmanager ingress | `list` | `[]` | no |
-| alertmanager\_ingress\_tls | TLS configurationf or Alertmanager ingress | `list` | `[]` | no |
-| alertmanager\_node\_selector | Node selector for alertmanager pods | `map` | `{}` | no |
-| alertmanager\_pdb\_enable | Enable PDB | `bool` | `true` | no |
-| alertmanager\_pdb\_max\_unavailable | Max unavailable pods for Alertmanager | `number` | `1` | no |
-| alertmanager\_pod\_security\_policy\_annotations | PodSecurityPolicy annotations for alertmanager | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
-| alertmanager\_prefix\_url | The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug so that the various internal URLs are still able to access as they are in the default case. | `string` | `""` | no |
-| alertmanager\_priority\_class\_name | Priority Class Name for Alertmanager pods | `string` | `""` | no |
-| alertmanager\_pull\_policy | Image pull policy for Alertmanager | `string` | `"IfNotPresent"` | no |
-| alertmanager\_pv\_access\_modes | alertmanager data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
-| alertmanager\_pv\_annotations | Annotations for Alertmanager PV | `map` | `{}` | no |
-| alertmanager\_pv\_enabled | Enable persistent volume on Alertmanager | `string` | `"true"` | no |
-| alertmanager\_pv\_existing\_claim | Use an existing PV claim for alertmanager | `string` | `""` | no |
-| alertmanager\_pv\_size | alertmanager data Persistent Volume size | `string` | `"2Gi"` | no |
-| alertmanager\_replica | Number of replicas for AlertManager | `number` | `1` | no |
-| alertmanager\_repository | Docker repository for Alert Manager | `string` | `"prom/alertmanager"` | no |
-| alertmanager\_resources | Resources for alertmanager | `map` | `{}` | no |
-| alertmanager\_security\_context | Security context for alertmanager pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `alertmanager_security_context_json` instead | `map` | `{}` | no |
-| alertmanager\_security\_context\_json | JSON string for security context for alertmanager pods | `string` | `""` | no |
-| alertmanager\_service\_account | Name of the service account for AlertManager. Defaults to component's fully qualified name. | `string` | `""` | no |
-| alertmanager\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
-| alertmanager\_service\_annotations | Annotations for Alertmanager service | `map` | `{}` | no |
-| alertmanager\_service\_cluster\_ip | Cluster IP for Alertmanager Service | `string` | `""` | no |
-| alertmanager\_service\_external\_ips | External IPs for Alertmanager service | `list` | `[]` | no |
-| alertmanager\_service\_labels | Labels for Alertmanager service | `map` | `{}` | no |
-| alertmanager\_service\_lb\_ip | Load Balancer IP for Alertmanager service | `string` | `""` | no |
-| alertmanager\_service\_lb\_source\_ranges | List of source CIDRs allowed to access the Alertmanager LB | `list` | `[]` | no |
-| alertmanager\_service\_port | Service port for Alertmanager | `number` | `80` | no |
-| alertmanager\_service\_type | Type of service for Alertmanager | `string` | `"ClusterIP"` | no |
-| alertmanager\_storage\_class | Storage class for alertmanager PV. If set to "-", storageClassName: "", which disables dynamic provisioning | `string` | `""` | no |
-| alertmanager\_sub\_path | Subdirectory of alertmanager data Persistent Volume to mount | `string` | `""` | no |
-| alertmanager\_tag | Tag for Alertmanager Docker Image | `string` | `"v0.16.1"` | no |
-| alertmanager\_tolerations | Tolerations for Alertmanager | `list` | `[]` | no |
-| alertmanager\_volume\_binding\_mode | Alertmanager data Persistent Volume Binding Mode | `string` | `""` | no |
-| chart\_name | Helm chart name to provision | `string` | `"prometheus"` | no |
-| chart\_namespace | Namespace to install the chart into | `string` | `"default"` | no |
-| chart\_repository | Helm repository for the chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
-| chart\_version | Version of Chart to install. Set to empty to install the latest version | `string` | `""` | no |
-| configmap\_extra\_args | Extra arguments for ConfigMap Reload | `map` | `{}` | no |
-| configmap\_extra\_volumes | Extra volumes for ConfigMap Extra Volumes | `list` | `[]` | no |
-| configmap\_image\_repo | Docker Image repo for ConfigMap Reload | `string` | `"jimmidyson/configmap-reload"` | no |
-| configmap\_image\_tag | Docker image tag for ConfigMap Reload | `string` | `"v0.2.2"` | no |
-| configmap\_name | Name of the ConfigMap Reload container | `string` | `"configmap-reload"` | no |
-| configmap\_pull\_policy | Image pull policy for ConfigMap reload | `string` | `"IfNotPresent"` | no |
-| configmap\_resources | Resources for ConfigMap Reload pod | `map` | `{}` | no |
-| enable\_network\_policy | Create a NetworkPolicy resource | `string` | `"false"` | no |
-| extra\_scrape\_configs | YAML String for extra scrape configs | `string` | `""` | no |
-| image\_pull\_secrets | Image pull secrets, if any | `map` | `{}` | no |
-| kube\_state\_metrics\_affinity | Affinity for Kube State Metrics | `map` | `{}` | no |
-| kube\_state\_metrics\_annotations | Annotations for Kube State Metrics pods | `map` | `{}` | no |
-| kube\_state\_metrics\_autosharding | If set to true, this will deploy kube-state-metrics as a StatefulSet and the data<br>will be automatically sharded across <.Values.replicas> pods using the built-in<br>autodiscovery feature: https://github.com/kubernetes/kube-state-metrics#automated-sharding<br>This is an experimental feature and there are no stability guarantees. | `bool` | `false` | no |
-| kube\_state\_metrics\_chart\_name | Helm chart name to provision | `string` | `"kube-state-metrics"` | no |
-| kube\_state\_metrics\_chart\_namespace | Namespace to install the chart into | `string` | `"default"` | no |
-| kube\_state\_metrics\_chart\_repository | Helm repository for the chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
-| kube\_state\_metrics\_chart\_version | Version of Chart to install. Set to empty to install the latest version | `string` | `""` | no |
-| kube\_state\_metrics\_collection\_namespace | Specific namespaces to collect metrics for | `string` | `""` | no |
-| kube\_state\_metrics\_collectors | Collectors for Kube state metrics | `map` | <pre>{<br>  "certificatesigningrequests": true,<br>  "configmaps": true,<br>  "cronjobs": true,<br>  "daemonsets": true,<br>  "deployments": true,<br>  "endpoints": true,<br>  "horizontalpodautoscalers": true,<br>  "ingresses": true,<br>  "jobs": true,<br>  "limitranges": true,<br>  "mutatingwebhookconfigurations": true,<br>  "namespaces": true,<br>  "networkpolicies": true,<br>  "nodes": true,<br>  "persistentvolumeclaims": true,<br>  "persistentvolumes": true,<br>  "poddisruptionbudgets": true,<br>  "pods": true,<br>  "replicasets": true,<br>  "replicationcontrollers": true,<br>  "resourcequotas": true,<br>  "secrets": true,<br>  "services": true,<br>  "statefulsets": true,<br>  "storageclasses": true,<br>  "validatingwebhookconfigurations": true,<br>  "verticalpodautoscalers": true,<br>  "volumeattachments": true<br>}</pre> | no |
-| kube\_state\_metrics\_enable | Enable Kube State Metrics | `string` | `"true"` | no |
-| kube\_state\_metrics\_extra\_args | Extra arguments for Kube State Metrics container | `map` | `{}` | no |
-| kube\_state\_metrics\_extra\_env | Extra environment variables for Kube State Metrics container | `map` | `{}` | no |
-| kube\_state\_metrics\_host\_network | Use host network for KSM | `bool` | `false` | no |
-| kube\_state\_metrics\_labels | Labels for Kube State Metrics | `map` | `{}` | no |
-| kube\_state\_metrics\_node\_selector | Node selector for Kube State Metrics pods | `map` | `{}` | no |
-| kube\_state\_metrics\_pdb | PDB for Kubestatemetrics | `map` | <pre>{<br>  "maxUnavailable": 1<br>}</pre> | no |
-| kube\_state\_metrics\_pod\_security\_policy\_annotations | PodSecurityPolicy annotations for Kube State Metrics | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
-| kube\_state\_metrics\_priority\_class\_name | Priority Class Name for Kube State Metrics pods | `string` | `""` | no |
-| kube\_state\_metrics\_pull\_policy | Image pull policy for Kube State Metrics | `string` | `"IfNotPresent"` | no |
-| kube\_state\_metrics\_release\_name | Helm release name for Kube State Metrics | `string` | `"kube-state-metrics"` | no |
-| kube\_state\_metrics\_replica | Number of replicas for Kube State Metrics | `number` | `1` | no |
-| kube\_state\_metrics\_repository | Docker repository for Kube State Metrics | `string` | `"k8s.gcr.io/kube-state-metrics/kube-state-metrics"` | no |
-| kube\_state\_metrics\_resources | Resources for Kube State Metrics | `map` | `{}` | no |
-| kube\_state\_metrics\_security\_context | Security context for kube\_state\_metrics pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `kube_state_metrics_security_context_json` instead | `map` | `{}` | no |
-| kube\_state\_metrics\_security\_context\_json | JSON string for security context for kube\_state\_metrics pods | `string` | `""` | no |
-| kube\_state\_metrics\_service\_account | Name of the service account for kubeStateMetrics. Defaults to component's fully qualified name. | `string` | `""` | no |
-| kube\_state\_metrics\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
-| kube\_state\_metrics\_service\_annotations | Annotations for Kube State Metrics service | `map` | <pre>{<br>  "prometheus.io/scrape": "true"<br>}</pre> | no |
-| kube\_state\_metrics\_service\_cluster\_ip | Cluster IP for Kube State Metrics Service | `string` | `"None"` | no |
-| kube\_state\_metrics\_service\_lb\_ip | Load Balancer IP for Kube State Metrics service | `string` | `""` | no |
-| kube\_state\_metrics\_service\_port | Service port for Kube State Metrics | `number` | `80` | no |
-| kube\_state\_metrics\_service\_type | Type of service for Kube State Metrics | `string` | `"ClusterIP"` | no |
-| kube\_state\_metrics\_tag | Tag for Kube State Metrics Docker Image | `string` | `"v2.0.0"` | no |
-| kube\_state\_metrics\_tolerations | Tolerations for Kube State Metrics | `list` | `[]` | no |
-| max\_history | Max History for Helm | `number` | `20` | no |
-| node\_exporter\_annotations | Annotations for Node Exporter pods | `map` | `{}` | no |
-| node\_exporter\_config\_map\_mounts | ConfigMap Mounts for Node Exporter | `list` | `[]` | no |
-| node\_exporter\_enable | Enable Node Exporter | `string` | `"true"` | no |
-| node\_exporter\_enable\_pod\_security\_policy | Create PodSecurityPolicy for Node Exporter | `string` | `"false"` | no |
-| node\_exporter\_extra\_args | Extra arguments for Node Exporter container | `map` | `{}` | no |
-| node\_exporter\_host\_network | Use the Host network namespace for Node Exporter | `string` | `"true"` | no |
-| node\_exporter\_host\_path\_mounts | Host Path Mounts for Node Exporter | `list` | `[]` | no |
-| node\_exporter\_host\_pid | Use the Network PID namespace for Node Exporter | `string` | `"true"` | no |
-| node\_exporter\_labels | Labels for Node Exporter | `map` | `{}` | no |
-| node\_exporter\_node\_selector | Node selector for node\_exporter pods | `map` | `{}` | no |
-| node\_exporter\_pdb\_enable | Enable PDB | `bool` | `true` | no |
-| node\_exporter\_pdb\_max\_unavailable | Max unavailable pods | `number` | `1` | no |
-| node\_exporter\_pod\_security\_policy\_annotations | PodSecurityPolicy annotations for Node exporter | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
-| node\_exporter\_priority\_class\_name | Priority Class Name for Node Exporter pods | `string` | `""` | no |
-| node\_exporter\_pull\_policy | Image pull policy for Node Exporter | `string` | `"IfNotPresent"` | no |
-| node\_exporter\_replica | Number of replicas for Node Exporter | `number` | `1` | no |
-| node\_exporter\_repository | Docker repository for Node Exporter | `string` | `"prom/node-exporter"` | no |
-| node\_exporter\_resources | Resources for node\_exporter | `map` | `{}` | no |
-| node\_exporter\_security\_context | Security context for node\_exporter pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `node_exporter_security_context_json` instead | `map` | `{}` | no |
-| node\_exporter\_security\_context\_json | JSON string for security context for node\_exporter pods | `string` | `""` | no |
-| node\_exporter\_service\_account | Name of the service account for nodeExporter. Defaults to component's fully qualified name. | `string` | `""` | no |
-| node\_exporter\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
-| node\_exporter\_service\_annotations | Annotations for Node Exporter service | `map` | <pre>{<br>  "prometheus.io/scrape": "true"<br>}</pre> | no |
-| node\_exporter\_service\_cluster\_ip | Cluster IP for Node Exporter Service | `string` | `"None"` | no |
-| node\_exporter\_service\_external\_ips | External IPs for Node Exporter service | `list` | `[]` | no |
-| node\_exporter\_service\_labels | Labels for Node Exporter service | `map` | `{}` | no |
-| node\_exporter\_service\_lb\_ip | Load Balancer IP for Node Exporter service | `string` | `""` | no |
-| node\_exporter\_service\_lb\_source\_ranges | List of source CIDRs allowed to access the Node Exporter LB | `list` | `[]` | no |
-| node\_exporter\_service\_port | Service port for Node Exporter | `number` | `9100` | no |
-| node\_exporter\_service\_type | Type of service for Node Exporter | `string` | `"ClusterIP"` | no |
-| node\_exporter\_tag | Tag for Node Exporter Docker Image | `string` | `"v0.17.0"` | no |
-| node\_exporter\_tolerations | Tolerations for Node Exporter | `list` | `[]` | no |
-| pod\_security\_policy\_enable | Create PodSecurityPolicy Resources | `bool` | `true` | no |
-| pushgateway\_annotations | Annotations for Pushgateway pods | `map` | `{}` | no |
-| pushgateway\_enable | Enable Pushgateway | `string` | `"true"` | no |
-| pushgateway\_extra\_args | Extra arguments for Pushgateway container | `map` | `{}` | no |
-| pushgateway\_extra\_env | Extra environment variables for Pushgateway container | `map` | `{}` | no |
-| pushgateway\_ingress\_annotations | Annotations for Pushgateway ingress | `map` | `{}` | no |
-| pushgateway\_ingress\_enabled | Enable ingress for Pushgateway | `string` | `"false"` | no |
-| pushgateway\_ingress\_extra\_labels | Additional labels for Pushgateway ingress | `map` | `{}` | no |
-| pushgateway\_ingress\_hosts | List of Hosts for Pushgateway ingress | `list` | `[]` | no |
-| pushgateway\_ingress\_tls | TLS configurationf or Pushgateway ingress | `list` | `[]` | no |
-| pushgateway\_node\_selector | Node selector for pushgateway pods | `map` | `{}` | no |
-| pushgateway\_pdb\_enable | Enable PDB | `bool` | `true` | no |
-| pushgateway\_pdb\_max\_unavailable | Max unavailable pods | `number` | `1` | no |
-| pushgateway\_pod\_security\_policy\_annotations | PodSecurityPolicy annotations for Pushgateway | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
-| pushgateway\_priority\_class\_name | Priority Class Name for Pushgateway pods | `string` | `""` | no |
-| pushgateway\_pull\_policy | Image pull policy for Pushgateway | `string` | `"IfNotPresent"` | no |
-| pushgateway\_pv\_access\_modes | pushgateway data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
-| pushgateway\_pv\_annotations | Annotations for Pushgateway PV | `map` | `{}` | no |
-| pushgateway\_pv\_enabled | Enable persistent volume on Pushgateway | `string` | `"true"` | no |
-| pushgateway\_pv\_existing\_claim | Use an existing PV claim for pushgateway | `string` | `""` | no |
-| pushgateway\_pv\_size | pushgateway data Persistent Volume size | `string` | `"2Gi"` | no |
-| pushgateway\_replica | Number of replicas for pushgateway | `number` | `1` | no |
-| pushgateway\_repository | Docker repository for Pushgateway | `string` | `"prom/pushgateway"` | no |
-| pushgateway\_resources | Resources for pushgateway | `map` | `{}` | no |
-| pushgateway\_security\_context | Security context for pushgateway pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `pushgateway_security_context_json` instead | `map` | `{}` | no |
-| pushgateway\_security\_context\_json | JSON string for security context for pushgateway pods | `string` | `""` | no |
-| pushgateway\_service\_account | Name of the service account for pushgateway. Defaults to component's fully qualified name. | `string` | `""` | no |
-| pushgateway\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
-| pushgateway\_service\_annotations | Annotations for Pushgateway service | `map` | <pre>{<br>  "prometheus.io/probe": "pushgateway"<br>}</pre> | no |
-| pushgateway\_service\_cluster\_ip | Cluster IP for Pushgateway Service | `string` | `""` | no |
-| pushgateway\_service\_external\_ips | External IPs for Pushgateway service | `list` | `[]` | no |
-| pushgateway\_service\_labels | Labels for Pushgateway service | `map` | `{}` | no |
-| pushgateway\_service\_lb\_ip | Load Balancer IP for Pushgateway service | `string` | `""` | no |
-| pushgateway\_service\_lb\_source\_ranges | List of source CIDRs allowed to access the Pushgateway LB | `list` | `[]` | no |
-| pushgateway\_service\_port | Service port for Pushgateway | `number` | `9091` | no |
-| pushgateway\_service\_type | Type of service for Pushgateway | `string` | `"ClusterIP"` | no |
-| pushgateway\_tag | Tag for Pushgateway Docker Image | `string` | `"v0.6.0"` | no |
-| pushgateway\_tolerations | Tolerations for Pushgateway | `list` | `[]` | no |
-| release\_name | Helm release name for Prometheus | `string` | `"prometheus"` | no |
-| scrape\_skip\_apiserver\_tls\_verify | Skip verifying TLS Certificate for Kubernetes Master Server Scrape target. Warning: This is insecure | `bool` | `false` | no |
-| scrape\_skip\_nodes\_tls\_verify | Skip verifying TLS Certificate for Kubernetes Nodes Scrape target. Warning: This is insecure | `bool` | `false` | no |
-| server\_additional\_global | YAML string for additional global configuration for Prometheus Server | `string` | `""` | no |
-| server\_affinity | Affinity for server pods | `map` | `{}` | no |
-| server\_alerts | Prometheus server alerts entries in YAML. Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/ | `string` | `"[]\n# - name: Instances\n#   rules:\n#     - alert: InstanceDown\n#       expr: up == 0\n#       for: 5m\n#       labels:\n#         severity: page\n#       annotations:\n#         description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'\n#         summary: 'Instance {{ $labels.instance }} down'\n"` | no |
-| server\_annotations | Annotations for server pods | `map` | `{}` | no |
-| server\_base\_url | External URL which can access alertmanager | `string` | `""` | no |
-| server\_config\_override | Overriding the Prometheus server config file in YAML | `string` | `""` | no |
-| server\_data\_retention | Prometheus data retention period (i.e 360h) | `string` | `""` | no |
-| server\_enable | Deploy Prometheus Server | `string` | `"true"` | no |
-| server\_enable\_service\_links | EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links. | `bool` | `true` | no |
-| server\_evaluation\_interval | How frequently to evaluate rules | `string` | `"1m"` | no |
-| server\_extra\_args | Extra arguments for server container | `map` | `{}` | no |
-| server\_extra\_configmap\_mounts | Additional Prometheus server ConfigMap mounts | `list` | `[]` | no |
-| server\_extra\_env | Extra environment variables for server container | `map` | `{}` | no |
-| server\_extra\_flags | Additional flags to control Prometheus server behaviour. | `list` | `[]` | no |
-| server\_extra\_host\_path\_mounts | Additional Prometheus server hostPath mounts | `list` | `[]` | no |
-| server\_extra\_secret\_mounts | Extra secret mounts for server | `list` | `[]` | no |
-| server\_extra\_volume\_mounts | Additional Prometheus server Volume mounts | `list` | `[]` | no |
-| server\_extra\_volumes | Additional Prometheus server Volumes | `list` | `[]` | no |
-| server\_headless\_annotations | Annotations for server StatefulSet headless service | `map` | `{}` | no |
-| server\_headless\_labels | Labels for server StatefulSet headless service | `map` | `{}` | no |
-| server\_ingress\_annotations | Annotations for server ingress | `map` | `{}` | no |
-| server\_ingress\_enabled | Enable ingress for server | `string` | `"false"` | no |
-| server\_ingress\_extra\_labels | Additional labels for server ingress | `map` | `{}` | no |
-| server\_ingress\_hosts | List of Hosts for server ingress | `list` | `[]` | no |
-| server\_ingress\_tls | TLS configurationf or server ingress | `list` | `[]` | no |
-| server\_liveness\_probe\_initial\_delay | Initial delay before the probe starts checking. You might need to increase this for Prometheus to repair the TSDB servers if your pods keeps getting killed by probes during startup. | `number` | `30` | no |
-| server\_liveness\_probe\_timeout | Number of seconds before a probe fails due to timeout | `number` | `10` | no |
-| server\_node\_selector | Node selector for server pods | `map` | `{}` | no |
-| server\_pdb\_enable | Enable PDB | `bool` | `true` | no |
-| server\_pdb\_max\_unavailable | Max unavailable pods | `number` | `1` | no |
-| server\_pod\_security\_policy\_annotations | PodSecurityPolicy annotations for server | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
-| server\_prefix\_url | The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug so that the various internal URLs are still able to access as they are in the default case. | `string` | `""` | no |
-| server\_priority\_class\_name | Priority Class Name for server pods | `string` | `""` | no |
-| server\_pull\_policy | Image pull policy for server | `string` | `"IfNotPresent"` | no |
-| server\_pv\_access\_modes | server data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
-| server\_pv\_annotations | Annotations for server PV | `map` | `{}` | no |
-| server\_pv\_enabled | Enable persistent volume on server | `string` | `"true"` | no |
-| server\_pv\_existing\_claim | Use an existing PV claim for server | `string` | `""` | no |
-| server\_pv\_size | server data Persistent Volume size | `string` | `"8Gi"` | no |
-| server\_readiness\_probe\_initial\_delay | Initial delay before the probe starts checking. You might need to increase this for Prometheus to repair the TSDB servers if your pods keeps getting killed by probes during startup. | `number` | `30` | no |
-| server\_readiness\_probe\_timeout | Number of seconds before a probe fails due to timeout | `number` | `10` | no |
-| server\_replica | Number of replicas for server | `number` | `1` | no |
-| server\_repository | Docker repository for server | `string` | `"prom/prometheus"` | no |
-| server\_resources | Resources for server | `map` | `{}` | no |
-| server\_rules | Prometheus server rules entries in YAML | `string` | `"[]\n# - name: k8s_health\n#   rules:\n#     - record: k8s_container_oom\n#       expr: increase(kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\"}[2m]) and on(pod) increase(kube_pod_container_status_restarts_total[2m])\n"` | no |
-| server\_scrape\_interval | How frequently to scrape targets by default | `string` | `"1m"` | no |
-| server\_scrape\_timeout | How long until a scrape request times out | `string` | `"10s"` | no |
-| server\_security\_context | Security context for server pods defined as a map which will be serialized to JSON.   Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and   this will not work for fields like `runAsUser`. Specify a JSON string with   `server_security_context_json` instead | `map` | `{}` | no |
-| server\_security\_context\_json | JSON string for security context for server pods | `string` | `""` | no |
-| server\_service\_account | Name of the service account for server. Defaults to component's fully qualified name. | `string` | `""` | no |
-| server\_service\_account\_annotations | Annotations for the service account | `map` | `{}` | no |
-| server\_service\_annotations | Annotations for server service | `map` | <pre>{<br>  "prometheus.io/probe": "server"<br>}</pre> | no |
-| server\_service\_cluster\_ip | Cluster IP for server Service | `string` | `""` | no |
-| server\_service\_external\_ips | External IPs for server service | `list` | `[]` | no |
-| server\_service\_labels | Labels for server service | `map` | `{}` | no |
-| server\_service\_lb\_ip | Load Balancer IP for server service | `string` | `""` | no |
-| server\_service\_lb\_source\_ranges | List of source CIDRs allowed to access the server LB | `list` | `[]` | no |
-| server\_service\_port | Service port for server | `number` | `9091` | no |
-| server\_service\_type | Type of service for server | `string` | `"ClusterIP"` | no |
-| server\_sidecar\_containers | Sidecar containers for server | `list` | `[]` | no |
-| server\_statefulset\_annotations | Annotations for server StatefulSet | `map` | `{}` | no |
-| server\_tag | Tag for server Docker Image | `string` | `"v2.8.1"` | no |
-| server\_termination\_grace\_seconds | Prometheus server pod termination grace period | `string` | `"300"` | no |
-| server\_tolerations | Tolerations for server | `list` | `[]` | no |
+|------|-------------|------|---------|:--------:|
+| <a name="input_alert_relabel_configs"></a> [alert\_relabel\_configs](#input\_alert\_relabel\_configs) | Adds option to add alert\_relabel\_configs to avoid duplicate alerts in alertmanager useful in H/A prometheus with different external labels but the same alerts | `map` | `{}` | no |
+| <a name="input_alertmanager_affinity"></a> [alertmanager\_affinity](#input\_alertmanager\_affinity) | Affinity for alertmanager pods | `map` | `{}` | no |
+| <a name="input_alertmanager_annotations"></a> [alertmanager\_annotations](#input\_alertmanager\_annotations) | Annotations for Alertmanager pods | `map` | `{}` | no |
+| <a name="input_alertmanager_base_url"></a> [alertmanager\_base\_url](#input\_alertmanager\_base\_url) | External URL which can access alertmanager | `string` | `"/"` | no |
+| <a name="input_alertmanager_config_file_name"></a> [alertmanager\_config\_file\_name](#input\_alertmanager\_config\_file\_name) | The configuration file name to be loaded to alertmanager Must match the key within configuration loaded from ConfigMap/Secret | `string` | `"alertmanager.yml"` | no |
+| <a name="input_alertmanager_config_from_secret"></a> [alertmanager\_config\_from\_secret](#input\_alertmanager\_config\_from\_secret) | The name of a secret in the same kubernetes namespace which contains the Alertmanager config Defining configFromSecret will cause templates/alertmanager-configmap.yaml to NOT generate a ConfigMap resource | `string` | `""` | no |
+| <a name="input_alertmanager_config_map_override_name"></a> [alertmanager\_config\_map\_override\_name](#input\_alertmanager\_config\_map\_override\_name) | ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName} Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml to NOT generate a ConfigMap resource | `string` | `""` | no |
+| <a name="input_alertmanager_enable"></a> [alertmanager\_enable](#input\_alertmanager\_enable) | Enable Alert manager | `string` | `"true"` | no |
+| <a name="input_alertmanager_extra_args"></a> [alertmanager\_extra\_args](#input\_alertmanager\_extra\_args) | Extra arguments for Alertmanager container | `map` | `{}` | no |
+| <a name="input_alertmanager_extra_env"></a> [alertmanager\_extra\_env](#input\_alertmanager\_extra\_env) | Extra environment variables for Alertmanager container | `map` | `{}` | no |
+| <a name="input_alertmanager_extra_secret_mounts"></a> [alertmanager\_extra\_secret\_mounts](#input\_alertmanager\_extra\_secret\_mounts) | Defines additional mounts with secrets. Secrets must be manually created in the namespace. | `list` | `[]` | no |
+| <a name="input_alertmanager_files"></a> [alertmanager\_files](#input\_alertmanager\_files) | Additional ConfigMap entries for Alertmanager in YAML string | `string` | `"alertmanager.yml:\n  global: {}\n    # slack_api_url: ''\n\n  receivers:\n    - name: default-receiver\n      # slack_configs:\n      #  - channel: '@you'\n      #    send_resolved: true\n\n  route:\n    group_wait: 10s\n    group_interval: 5m\n    receiver: default-receiver\n    repeat_interval: 3h\n"` | no |
+| <a name="input_alertmanager_headless_annotations"></a> [alertmanager\_headless\_annotations](#input\_alertmanager\_headless\_annotations) | Annotations for alertmanager StatefulSet headless service | `map` | `{}` | no |
+| <a name="input_alertmanager_headless_labels"></a> [alertmanager\_headless\_labels](#input\_alertmanager\_headless\_labels) | Labels for alertmanager StatefulSet headless service | `map` | `{}` | no |
+| <a name="input_alertmanager_ingress_annotations"></a> [alertmanager\_ingress\_annotations](#input\_alertmanager\_ingress\_annotations) | Annotations for Alertmanager ingress | `map` | `{}` | no |
+| <a name="input_alertmanager_ingress_enabled"></a> [alertmanager\_ingress\_enabled](#input\_alertmanager\_ingress\_enabled) | Enable ingress for Alertmanager | `string` | `"false"` | no |
+| <a name="input_alertmanager_ingress_extra_labels"></a> [alertmanager\_ingress\_extra\_labels](#input\_alertmanager\_ingress\_extra\_labels) | Additional labels for Alertmanager ingress | `map` | `{}` | no |
+| <a name="input_alertmanager_ingress_hosts"></a> [alertmanager\_ingress\_hosts](#input\_alertmanager\_ingress\_hosts) | List of Hosts for Alertmanager ingress | `list` | `[]` | no |
+| <a name="input_alertmanager_ingress_tls"></a> [alertmanager\_ingress\_tls](#input\_alertmanager\_ingress\_tls) | TLS configurationf or Alertmanager ingress | `list` | `[]` | no |
+| <a name="input_alertmanager_node_selector"></a> [alertmanager\_node\_selector](#input\_alertmanager\_node\_selector) | Node selector for alertmanager pods | `map` | `{}` | no |
+| <a name="input_alertmanager_pdb_enable"></a> [alertmanager\_pdb\_enable](#input\_alertmanager\_pdb\_enable) | Enable PDB | `bool` | `true` | no |
+| <a name="input_alertmanager_pdb_max_unavailable"></a> [alertmanager\_pdb\_max\_unavailable](#input\_alertmanager\_pdb\_max\_unavailable) | Max unavailable pods for Alertmanager | `number` | `1` | no |
+| <a name="input_alertmanager_pod_security_policy_annotations"></a> [alertmanager\_pod\_security\_policy\_annotations](#input\_alertmanager\_pod\_security\_policy\_annotations) | PodSecurityPolicy annotations for alertmanager | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
+| <a name="input_alertmanager_prefix_url"></a> [alertmanager\_prefix\_url](#input\_alertmanager\_prefix\_url) | The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug so that the various internal URLs are still able to access as they are in the default case. | `string` | `""` | no |
+| <a name="input_alertmanager_priority_class_name"></a> [alertmanager\_priority\_class\_name](#input\_alertmanager\_priority\_class\_name) | Priority Class Name for Alertmanager pods | `string` | `""` | no |
+| <a name="input_alertmanager_pull_policy"></a> [alertmanager\_pull\_policy](#input\_alertmanager\_pull\_policy) | Image pull policy for Alertmanager | `string` | `"IfNotPresent"` | no |
+| <a name="input_alertmanager_pv_access_modes"></a> [alertmanager\_pv\_access\_modes](#input\_alertmanager\_pv\_access\_modes) | alertmanager data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
+| <a name="input_alertmanager_pv_annotations"></a> [alertmanager\_pv\_annotations](#input\_alertmanager\_pv\_annotations) | Annotations for Alertmanager PV | `map` | `{}` | no |
+| <a name="input_alertmanager_pv_enabled"></a> [alertmanager\_pv\_enabled](#input\_alertmanager\_pv\_enabled) | Enable persistent volume on Alertmanager | `string` | `"true"` | no |
+| <a name="input_alertmanager_pv_existing_claim"></a> [alertmanager\_pv\_existing\_claim](#input\_alertmanager\_pv\_existing\_claim) | Use an existing PV claim for alertmanager | `string` | `""` | no |
+| <a name="input_alertmanager_pv_size"></a> [alertmanager\_pv\_size](#input\_alertmanager\_pv\_size) | alertmanager data Persistent Volume size | `string` | `"2Gi"` | no |
+| <a name="input_alertmanager_replica"></a> [alertmanager\_replica](#input\_alertmanager\_replica) | Number of replicas for AlertManager | `number` | `1` | no |
+| <a name="input_alertmanager_repository"></a> [alertmanager\_repository](#input\_alertmanager\_repository) | Docker repository for Alert Manager | `string` | `"prom/alertmanager"` | no |
+| <a name="input_alertmanager_resources"></a> [alertmanager\_resources](#input\_alertmanager\_resources) | Resources for alertmanager | `map` | `{}` | no |
+| <a name="input_alertmanager_security_context"></a> [alertmanager\_security\_context](#input\_alertmanager\_security\_context) | Security context for alertmanager pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `alertmanager_security_context_json` instead | `map` | `{}` | no |
+| <a name="input_alertmanager_security_context_json"></a> [alertmanager\_security\_context\_json](#input\_alertmanager\_security\_context\_json) | JSON string for security context for alertmanager pods | `string` | `""` | no |
+| <a name="input_alertmanager_service_account"></a> [alertmanager\_service\_account](#input\_alertmanager\_service\_account) | Name of the service account for AlertManager. Defaults to component's fully qualified name. | `string` | `""` | no |
+| <a name="input_alertmanager_service_account_annotations"></a> [alertmanager\_service\_account\_annotations](#input\_alertmanager\_service\_account\_annotations) | Annotations for the service account | `map` | `{}` | no |
+| <a name="input_alertmanager_service_annotations"></a> [alertmanager\_service\_annotations](#input\_alertmanager\_service\_annotations) | Annotations for Alertmanager service | `map` | `{}` | no |
+| <a name="input_alertmanager_service_cluster_ip"></a> [alertmanager\_service\_cluster\_ip](#input\_alertmanager\_service\_cluster\_ip) | Cluster IP for Alertmanager Service | `string` | `""` | no |
+| <a name="input_alertmanager_service_external_ips"></a> [alertmanager\_service\_external\_ips](#input\_alertmanager\_service\_external\_ips) | External IPs for Alertmanager service | `list` | `[]` | no |
+| <a name="input_alertmanager_service_labels"></a> [alertmanager\_service\_labels](#input\_alertmanager\_service\_labels) | Labels for Alertmanager service | `map` | `{}` | no |
+| <a name="input_alertmanager_service_lb_ip"></a> [alertmanager\_service\_lb\_ip](#input\_alertmanager\_service\_lb\_ip) | Load Balancer IP for Alertmanager service | `string` | `""` | no |
+| <a name="input_alertmanager_service_lb_source_ranges"></a> [alertmanager\_service\_lb\_source\_ranges](#input\_alertmanager\_service\_lb\_source\_ranges) | List of source CIDRs allowed to access the Alertmanager LB | `list` | `[]` | no |
+| <a name="input_alertmanager_service_port"></a> [alertmanager\_service\_port](#input\_alertmanager\_service\_port) | Service port for Alertmanager | `number` | `80` | no |
+| <a name="input_alertmanager_service_type"></a> [alertmanager\_service\_type](#input\_alertmanager\_service\_type) | Type of service for Alertmanager | `string` | `"ClusterIP"` | no |
+| <a name="input_alertmanager_storage_class"></a> [alertmanager\_storage\_class](#input\_alertmanager\_storage\_class) | Storage class for alertmanager PV. If set to "-", storageClassName: "", which disables dynamic provisioning | `string` | `""` | no |
+| <a name="input_alertmanager_sub_path"></a> [alertmanager\_sub\_path](#input\_alertmanager\_sub\_path) | Subdirectory of alertmanager data Persistent Volume to mount | `string` | `""` | no |
+| <a name="input_alertmanager_tag"></a> [alertmanager\_tag](#input\_alertmanager\_tag) | Tag for Alertmanager Docker Image | `string` | `"v0.16.1"` | no |
+| <a name="input_alertmanager_tolerations"></a> [alertmanager\_tolerations](#input\_alertmanager\_tolerations) | Tolerations for Alertmanager | `list` | `[]` | no |
+| <a name="input_alertmanager_volume_binding_mode"></a> [alertmanager\_volume\_binding\_mode](#input\_alertmanager\_volume\_binding\_mode) | Alertmanager data Persistent Volume Binding Mode | `string` | `""` | no |
+| <a name="input_chart_name"></a> [chart\_name](#input\_chart\_name) | Helm chart name to provision | `string` | `"prometheus"` | no |
+| <a name="input_chart_namespace"></a> [chart\_namespace](#input\_chart\_namespace) | Namespace to install the chart into | `string` | `"default"` | no |
+| <a name="input_chart_repository"></a> [chart\_repository](#input\_chart\_repository) | Helm repository for the chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
+| <a name="input_chart_version"></a> [chart\_version](#input\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `""` | no |
+| <a name="input_configmap_extra_args"></a> [configmap\_extra\_args](#input\_configmap\_extra\_args) | Extra arguments for ConfigMap Reload | `map` | `{}` | no |
+| <a name="input_configmap_extra_volumes"></a> [configmap\_extra\_volumes](#input\_configmap\_extra\_volumes) | Extra volumes for ConfigMap Extra Volumes | `list` | `[]` | no |
+| <a name="input_configmap_image_repo"></a> [configmap\_image\_repo](#input\_configmap\_image\_repo) | Docker Image repo for ConfigMap Reload | `string` | `"jimmidyson/configmap-reload"` | no |
+| <a name="input_configmap_image_tag"></a> [configmap\_image\_tag](#input\_configmap\_image\_tag) | Docker image tag for ConfigMap Reload | `string` | `"v0.2.2"` | no |
+| <a name="input_configmap_name"></a> [configmap\_name](#input\_configmap\_name) | Name of the ConfigMap Reload container | `string` | `"configmap-reload"` | no |
+| <a name="input_configmap_pull_policy"></a> [configmap\_pull\_policy](#input\_configmap\_pull\_policy) | Image pull policy for ConfigMap reload | `string` | `"IfNotPresent"` | no |
+| <a name="input_configmap_resources"></a> [configmap\_resources](#input\_configmap\_resources) | Resources for ConfigMap Reload pod | `map` | `{}` | no |
+| <a name="input_enable_network_policy"></a> [enable\_network\_policy](#input\_enable\_network\_policy) | Create a NetworkPolicy resource | `string` | `"false"` | no |
+| <a name="input_extra_scrape_configs"></a> [extra\_scrape\_configs](#input\_extra\_scrape\_configs) | YAML String for extra scrape configs | `string` | `""` | no |
+| <a name="input_image_pull_secrets"></a> [image\_pull\_secrets](#input\_image\_pull\_secrets) | Image pull secrets, if any | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_affinity"></a> [kube\_state\_metrics\_affinity](#input\_kube\_state\_metrics\_affinity) | Affinity for Kube State Metrics | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_annotations"></a> [kube\_state\_metrics\_annotations](#input\_kube\_state\_metrics\_annotations) | Annotations for Kube State Metrics pods | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_autosharding"></a> [kube\_state\_metrics\_autosharding](#input\_kube\_state\_metrics\_autosharding) | If set to true, this will deploy kube-state-metrics as a StatefulSet and the data<br>will be automatically sharded across <.Values.replicas> pods using the built-in<br>autodiscovery feature: https://github.com/kubernetes/kube-state-metrics#automated-sharding<br>This is an experimental feature and there are no stability guarantees. | `bool` | `false` | no |
+| <a name="input_kube_state_metrics_chart_name"></a> [kube\_state\_metrics\_chart\_name](#input\_kube\_state\_metrics\_chart\_name) | Helm chart name to provision | `string` | `"kube-state-metrics"` | no |
+| <a name="input_kube_state_metrics_chart_namespace"></a> [kube\_state\_metrics\_chart\_namespace](#input\_kube\_state\_metrics\_chart\_namespace) | Namespace to install the chart into | `string` | `"default"` | no |
+| <a name="input_kube_state_metrics_chart_repository"></a> [kube\_state\_metrics\_chart\_repository](#input\_kube\_state\_metrics\_chart\_repository) | Helm repository for the chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
+| <a name="input_kube_state_metrics_chart_version"></a> [kube\_state\_metrics\_chart\_version](#input\_kube\_state\_metrics\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `""` | no |
+| <a name="input_kube_state_metrics_collection_namespace"></a> [kube\_state\_metrics\_collection\_namespace](#input\_kube\_state\_metrics\_collection\_namespace) | Specific namespaces to collect metrics for | `string` | `""` | no |
+| <a name="input_kube_state_metrics_collectors"></a> [kube\_state\_metrics\_collectors](#input\_kube\_state\_metrics\_collectors) | Collectors for Kube state metrics | `map` | <pre>{<br>  "certificatesigningrequests": true,<br>  "configmaps": true,<br>  "cronjobs": true,<br>  "daemonsets": true,<br>  "deployments": true,<br>  "endpoints": true,<br>  "horizontalpodautoscalers": true,<br>  "ingresses": true,<br>  "jobs": true,<br>  "limitranges": true,<br>  "mutatingwebhookconfigurations": true,<br>  "namespaces": true,<br>  "networkpolicies": true,<br>  "nodes": true,<br>  "persistentvolumeclaims": true,<br>  "persistentvolumes": true,<br>  "poddisruptionbudgets": true,<br>  "pods": true,<br>  "replicasets": true,<br>  "replicationcontrollers": true,<br>  "resourcequotas": true,<br>  "secrets": true,<br>  "services": true,<br>  "statefulsets": true,<br>  "storageclasses": true,<br>  "validatingwebhookconfigurations": true,<br>  "verticalpodautoscalers": true,<br>  "volumeattachments": true<br>}</pre> | no |
+| <a name="input_kube_state_metrics_enable"></a> [kube\_state\_metrics\_enable](#input\_kube\_state\_metrics\_enable) | Enable Kube State Metrics | `string` | `"true"` | no |
+| <a name="input_kube_state_metrics_extra_args"></a> [kube\_state\_metrics\_extra\_args](#input\_kube\_state\_metrics\_extra\_args) | Extra arguments for Kube State Metrics container | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_extra_env"></a> [kube\_state\_metrics\_extra\_env](#input\_kube\_state\_metrics\_extra\_env) | Extra environment variables for Kube State Metrics container | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_host_network"></a> [kube\_state\_metrics\_host\_network](#input\_kube\_state\_metrics\_host\_network) | Use host network for KSM | `bool` | `false` | no |
+| <a name="input_kube_state_metrics_labels"></a> [kube\_state\_metrics\_labels](#input\_kube\_state\_metrics\_labels) | Labels for Kube State Metrics | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_node_selector"></a> [kube\_state\_metrics\_node\_selector](#input\_kube\_state\_metrics\_node\_selector) | Node selector for Kube State Metrics pods | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_pdb"></a> [kube\_state\_metrics\_pdb](#input\_kube\_state\_metrics\_pdb) | PDB for Kubestatemetrics | `map` | <pre>{<br>  "maxUnavailable": 1<br>}</pre> | no |
+| <a name="input_kube_state_metrics_pod_security_policy_annotations"></a> [kube\_state\_metrics\_pod\_security\_policy\_annotations](#input\_kube\_state\_metrics\_pod\_security\_policy\_annotations) | PodSecurityPolicy annotations for Kube State Metrics | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
+| <a name="input_kube_state_metrics_priority_class_name"></a> [kube\_state\_metrics\_priority\_class\_name](#input\_kube\_state\_metrics\_priority\_class\_name) | Priority Class Name for Kube State Metrics pods | `string` | `""` | no |
+| <a name="input_kube_state_metrics_pull_policy"></a> [kube\_state\_metrics\_pull\_policy](#input\_kube\_state\_metrics\_pull\_policy) | Image pull policy for Kube State Metrics | `string` | `"IfNotPresent"` | no |
+| <a name="input_kube_state_metrics_release_name"></a> [kube\_state\_metrics\_release\_name](#input\_kube\_state\_metrics\_release\_name) | Helm release name for Kube State Metrics | `string` | `"kube-state-metrics"` | no |
+| <a name="input_kube_state_metrics_replica"></a> [kube\_state\_metrics\_replica](#input\_kube\_state\_metrics\_replica) | Number of replicas for Kube State Metrics | `number` | `1` | no |
+| <a name="input_kube_state_metrics_repository"></a> [kube\_state\_metrics\_repository](#input\_kube\_state\_metrics\_repository) | Docker repository for Kube State Metrics | `string` | `"k8s.gcr.io/kube-state-metrics/kube-state-metrics"` | no |
+| <a name="input_kube_state_metrics_resources"></a> [kube\_state\_metrics\_resources](#input\_kube\_state\_metrics\_resources) | Resources for Kube State Metrics | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_security_context"></a> [kube\_state\_metrics\_security\_context](#input\_kube\_state\_metrics\_security\_context) | Security context for kube\_state\_metrics pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `kube_state_metrics_security_context_json` instead | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_security_context_json"></a> [kube\_state\_metrics\_security\_context\_json](#input\_kube\_state\_metrics\_security\_context\_json) | JSON string for security context for kube\_state\_metrics pods | `string` | `""` | no |
+| <a name="input_kube_state_metrics_service_account"></a> [kube\_state\_metrics\_service\_account](#input\_kube\_state\_metrics\_service\_account) | Name of the service account for kubeStateMetrics. Defaults to component's fully qualified name. | `string` | `""` | no |
+| <a name="input_kube_state_metrics_service_account_annotations"></a> [kube\_state\_metrics\_service\_account\_annotations](#input\_kube\_state\_metrics\_service\_account\_annotations) | Annotations for the service account | `map` | `{}` | no |
+| <a name="input_kube_state_metrics_service_annotations"></a> [kube\_state\_metrics\_service\_annotations](#input\_kube\_state\_metrics\_service\_annotations) | Annotations for Kube State Metrics service | `map` | <pre>{<br>  "prometheus.io/scrape": "true"<br>}</pre> | no |
+| <a name="input_kube_state_metrics_service_cluster_ip"></a> [kube\_state\_metrics\_service\_cluster\_ip](#input\_kube\_state\_metrics\_service\_cluster\_ip) | Cluster IP for Kube State Metrics Service | `string` | `"None"` | no |
+| <a name="input_kube_state_metrics_service_lb_ip"></a> [kube\_state\_metrics\_service\_lb\_ip](#input\_kube\_state\_metrics\_service\_lb\_ip) | Load Balancer IP for Kube State Metrics service | `string` | `""` | no |
+| <a name="input_kube_state_metrics_service_port"></a> [kube\_state\_metrics\_service\_port](#input\_kube\_state\_metrics\_service\_port) | Service port for Kube State Metrics | `number` | `80` | no |
+| <a name="input_kube_state_metrics_service_type"></a> [kube\_state\_metrics\_service\_type](#input\_kube\_state\_metrics\_service\_type) | Type of service for Kube State Metrics | `string` | `"ClusterIP"` | no |
+| <a name="input_kube_state_metrics_tag"></a> [kube\_state\_metrics\_tag](#input\_kube\_state\_metrics\_tag) | Tag for Kube State Metrics Docker Image | `string` | `"v2.0.0"` | no |
+| <a name="input_kube_state_metrics_tolerations"></a> [kube\_state\_metrics\_tolerations](#input\_kube\_state\_metrics\_tolerations) | Tolerations for Kube State Metrics | `list` | `[]` | no |
+| <a name="input_max_history"></a> [max\_history](#input\_max\_history) | Max History for Helm | `number` | `20` | no |
+| <a name="input_node_exporter_annotations"></a> [node\_exporter\_annotations](#input\_node\_exporter\_annotations) | Annotations for Node Exporter pods | `map` | `{}` | no |
+| <a name="input_node_exporter_chart_name"></a> [node\_exporter\_chart\_name](#input\_node\_exporter\_chart\_name) | Helm chart name to provision for Node Exporter | `string` | `"prometheus-node-exporter"` | no |
+| <a name="input_node_exporter_chart_namespace"></a> [node\_exporter\_chart\_namespace](#input\_node\_exporter\_chart\_namespace) | Namespace to install the chart into | `string` | `"default"` | no |
+| <a name="input_node_exporter_chart_repository"></a> [node\_exporter\_chart\_repository](#input\_node\_exporter\_chart\_repository) | Helm repository for the Node Exporter chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
+| <a name="input_node_exporter_chart_version"></a> [node\_exporter\_chart\_version](#input\_node\_exporter\_chart\_version) | Version of Node Exporter Chart to install. Set to empty to install the latest version | `string` | `""` | no |
+| <a name="input_node_exporter_config_map_mounts"></a> [node\_exporter\_config\_map\_mounts](#input\_node\_exporter\_config\_map\_mounts) | ConfigMap Mounts for Node Exporter | `list` | `[]` | no |
+| <a name="input_node_exporter_enable"></a> [node\_exporter\_enable](#input\_node\_exporter\_enable) | Enable Node Exporter | `string` | `"true"` | no |
+| <a name="input_node_exporter_enable_pod_security_policy"></a> [node\_exporter\_enable\_pod\_security\_policy](#input\_node\_exporter\_enable\_pod\_security\_policy) | Create PodSecurityPolicy for Node Exporter | `string` | `"false"` | no |
+| <a name="input_node_exporter_extra_args"></a> [node\_exporter\_extra\_args](#input\_node\_exporter\_extra\_args) | Extra arguments for Node Exporter container | `map` | `{}` | no |
+| <a name="input_node_exporter_host_network"></a> [node\_exporter\_host\_network](#input\_node\_exporter\_host\_network) | Use the Host network namespace for Node Exporter | `string` | `"true"` | no |
+| <a name="input_node_exporter_host_path_mounts"></a> [node\_exporter\_host\_path\_mounts](#input\_node\_exporter\_host\_path\_mounts) | Host Path Mounts for Node Exporter | `list` | `[]` | no |
+| <a name="input_node_exporter_labels"></a> [node\_exporter\_labels](#input\_node\_exporter\_labels) | Labels for Node Exporter | `map` | `{}` | no |
+| <a name="input_node_exporter_node_selector"></a> [node\_exporter\_node\_selector](#input\_node\_exporter\_node\_selector) | Node selector for node\_exporter pods | `map` | `{}` | no |
+| <a name="input_node_exporter_pod_security_policy_annotations"></a> [node\_exporter\_pod\_security\_policy\_annotations](#input\_node\_exporter\_pod\_security\_policy\_annotations) | PodSecurityPolicy annotations for Node exporter | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
+| <a name="input_node_exporter_priority_class_name"></a> [node\_exporter\_priority\_class\_name](#input\_node\_exporter\_priority\_class\_name) | Priority Class Name for Node Exporter pods | `string` | `""` | no |
+| <a name="input_node_exporter_pull_policy"></a> [node\_exporter\_pull\_policy](#input\_node\_exporter\_pull\_policy) | Image pull policy for Node Exporter | `string` | `"IfNotPresent"` | no |
+| <a name="input_node_exporter_release_name"></a> [node\_exporter\_release\_name](#input\_node\_exporter\_release\_name) | Helm release name for Node Exporter | `string` | `"prometheus-node-exporter"` | no |
+| <a name="input_node_exporter_repository"></a> [node\_exporter\_repository](#input\_node\_exporter\_repository) | Docker repository for Node Exporter | `string` | `"prom/node-exporter"` | no |
+| <a name="input_node_exporter_resources"></a> [node\_exporter\_resources](#input\_node\_exporter\_resources) | Resources for node\_exporter | `map` | `{}` | no |
+| <a name="input_node_exporter_security_context"></a> [node\_exporter\_security\_context](#input\_node\_exporter\_security\_context) | Security context for node\_exporter pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `node_exporter_security_context_json` instead | `map` | `{}` | no |
+| <a name="input_node_exporter_security_context_json"></a> [node\_exporter\_security\_context\_json](#input\_node\_exporter\_security\_context\_json) | JSON string for security context for node\_exporter pods | `string` | `""` | no |
+| <a name="input_node_exporter_service_account"></a> [node\_exporter\_service\_account](#input\_node\_exporter\_service\_account) | Name of the service account for nodeExporter. Defaults to component's fully qualified name. | `string` | `""` | no |
+| <a name="input_node_exporter_service_account_annotations"></a> [node\_exporter\_service\_account\_annotations](#input\_node\_exporter\_service\_account\_annotations) | Annotations for the service account | `map` | `{}` | no |
+| <a name="input_node_exporter_service_annotations"></a> [node\_exporter\_service\_annotations](#input\_node\_exporter\_service\_annotations) | Annotations for Node Exporter service | `map` | <pre>{<br>  "prometheus.io/scrape": "true"<br>}</pre> | no |
+| <a name="input_node_exporter_service_port"></a> [node\_exporter\_service\_port](#input\_node\_exporter\_service\_port) | Service port for Node Exporter | `number` | `9100` | no |
+| <a name="input_node_exporter_service_type"></a> [node\_exporter\_service\_type](#input\_node\_exporter\_service\_type) | Type of service for Node Exporter | `string` | `"ClusterIP"` | no |
+| <a name="input_node_exporter_tag"></a> [node\_exporter\_tag](#input\_node\_exporter\_tag) | Tag for Node Exporter Docker Image | `string` | `"v0.17.0"` | no |
+| <a name="input_node_exporter_tolerations"></a> [node\_exporter\_tolerations](#input\_node\_exporter\_tolerations) | Tolerations for Node Exporter | `list` | `[]` | no |
+| <a name="input_pod_security_policy_enable"></a> [pod\_security\_policy\_enable](#input\_pod\_security\_policy\_enable) | Create PodSecurityPolicy Resources | `bool` | `true` | no |
+| <a name="input_prometheus_enable"></a> [prometheus\_enable](#input\_prometheus\_enable) | Enable Prometheus stack. Disable to use independent components like KSM and Node Exporter. | `bool` | `true` | no |
+| <a name="input_prometheus_remote_read_api_url"></a> [prometheus\_remote\_read\_api\_url](#input\_prometheus\_remote\_read\_api\_url) | Prometheus remote read URL | `string` | `null` | no |
+| <a name="input_prometheus_remote_write_api_url"></a> [prometheus\_remote\_write\_api\_url](#input\_prometheus\_remote\_write\_api\_url) | Prometheus remote write URL | `string` | `null` | no |
+| <a name="input_pushgateway_annotations"></a> [pushgateway\_annotations](#input\_pushgateway\_annotations) | Annotations for Pushgateway pods | `map` | `{}` | no |
+| <a name="input_pushgateway_enable"></a> [pushgateway\_enable](#input\_pushgateway\_enable) | Enable Pushgateway | `string` | `"true"` | no |
+| <a name="input_pushgateway_extra_args"></a> [pushgateway\_extra\_args](#input\_pushgateway\_extra\_args) | Extra arguments for Pushgateway container | `map` | `{}` | no |
+| <a name="input_pushgateway_extra_env"></a> [pushgateway\_extra\_env](#input\_pushgateway\_extra\_env) | Extra environment variables for Pushgateway container | `map` | `{}` | no |
+| <a name="input_pushgateway_ingress_annotations"></a> [pushgateway\_ingress\_annotations](#input\_pushgateway\_ingress\_annotations) | Annotations for Pushgateway ingress | `map` | `{}` | no |
+| <a name="input_pushgateway_ingress_enabled"></a> [pushgateway\_ingress\_enabled](#input\_pushgateway\_ingress\_enabled) | Enable ingress for Pushgateway | `string` | `"false"` | no |
+| <a name="input_pushgateway_ingress_extra_labels"></a> [pushgateway\_ingress\_extra\_labels](#input\_pushgateway\_ingress\_extra\_labels) | Additional labels for Pushgateway ingress | `map` | `{}` | no |
+| <a name="input_pushgateway_ingress_hosts"></a> [pushgateway\_ingress\_hosts](#input\_pushgateway\_ingress\_hosts) | List of Hosts for Pushgateway ingress | `list` | `[]` | no |
+| <a name="input_pushgateway_ingress_tls"></a> [pushgateway\_ingress\_tls](#input\_pushgateway\_ingress\_tls) | TLS configurationf or Pushgateway ingress | `list` | `[]` | no |
+| <a name="input_pushgateway_node_selector"></a> [pushgateway\_node\_selector](#input\_pushgateway\_node\_selector) | Node selector for pushgateway pods | `map` | `{}` | no |
+| <a name="input_pushgateway_pdb_enable"></a> [pushgateway\_pdb\_enable](#input\_pushgateway\_pdb\_enable) | Enable PDB | `bool` | `true` | no |
+| <a name="input_pushgateway_pdb_max_unavailable"></a> [pushgateway\_pdb\_max\_unavailable](#input\_pushgateway\_pdb\_max\_unavailable) | Max unavailable pods | `number` | `1` | no |
+| <a name="input_pushgateway_pod_security_policy_annotations"></a> [pushgateway\_pod\_security\_policy\_annotations](#input\_pushgateway\_pod\_security\_policy\_annotations) | PodSecurityPolicy annotations for Pushgateway | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
+| <a name="input_pushgateway_priority_class_name"></a> [pushgateway\_priority\_class\_name](#input\_pushgateway\_priority\_class\_name) | Priority Class Name for Pushgateway pods | `string` | `""` | no |
+| <a name="input_pushgateway_pull_policy"></a> [pushgateway\_pull\_policy](#input\_pushgateway\_pull\_policy) | Image pull policy for Pushgateway | `string` | `"IfNotPresent"` | no |
+| <a name="input_pushgateway_pv_access_modes"></a> [pushgateway\_pv\_access\_modes](#input\_pushgateway\_pv\_access\_modes) | pushgateway data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
+| <a name="input_pushgateway_pv_annotations"></a> [pushgateway\_pv\_annotations](#input\_pushgateway\_pv\_annotations) | Annotations for Pushgateway PV | `map` | `{}` | no |
+| <a name="input_pushgateway_pv_enabled"></a> [pushgateway\_pv\_enabled](#input\_pushgateway\_pv\_enabled) | Enable persistent volume on Pushgateway | `string` | `"true"` | no |
+| <a name="input_pushgateway_pv_existing_claim"></a> [pushgateway\_pv\_existing\_claim](#input\_pushgateway\_pv\_existing\_claim) | Use an existing PV claim for pushgateway | `string` | `""` | no |
+| <a name="input_pushgateway_pv_size"></a> [pushgateway\_pv\_size](#input\_pushgateway\_pv\_size) | pushgateway data Persistent Volume size | `string` | `"2Gi"` | no |
+| <a name="input_pushgateway_replica"></a> [pushgateway\_replica](#input\_pushgateway\_replica) | Number of replicas for pushgateway | `number` | `1` | no |
+| <a name="input_pushgateway_repository"></a> [pushgateway\_repository](#input\_pushgateway\_repository) | Docker repository for Pushgateway | `string` | `"prom/pushgateway"` | no |
+| <a name="input_pushgateway_resources"></a> [pushgateway\_resources](#input\_pushgateway\_resources) | Resources for pushgateway | `map` | `{}` | no |
+| <a name="input_pushgateway_security_context"></a> [pushgateway\_security\_context](#input\_pushgateway\_security\_context) | Security context for pushgateway pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `pushgateway_security_context_json` instead | `map` | `{}` | no |
+| <a name="input_pushgateway_security_context_json"></a> [pushgateway\_security\_context\_json](#input\_pushgateway\_security\_context\_json) | JSON string for security context for pushgateway pods | `string` | `""` | no |
+| <a name="input_pushgateway_service_account"></a> [pushgateway\_service\_account](#input\_pushgateway\_service\_account) | Name of the service account for pushgateway. Defaults to component's fully qualified name. | `string` | `""` | no |
+| <a name="input_pushgateway_service_account_annotations"></a> [pushgateway\_service\_account\_annotations](#input\_pushgateway\_service\_account\_annotations) | Annotations for the service account | `map` | `{}` | no |
+| <a name="input_pushgateway_service_annotations"></a> [pushgateway\_service\_annotations](#input\_pushgateway\_service\_annotations) | Annotations for Pushgateway service | `map` | <pre>{<br>  "prometheus.io/probe": "pushgateway"<br>}</pre> | no |
+| <a name="input_pushgateway_service_cluster_ip"></a> [pushgateway\_service\_cluster\_ip](#input\_pushgateway\_service\_cluster\_ip) | Cluster IP for Pushgateway Service | `string` | `""` | no |
+| <a name="input_pushgateway_service_external_ips"></a> [pushgateway\_service\_external\_ips](#input\_pushgateway\_service\_external\_ips) | External IPs for Pushgateway service | `list` | `[]` | no |
+| <a name="input_pushgateway_service_labels"></a> [pushgateway\_service\_labels](#input\_pushgateway\_service\_labels) | Labels for Pushgateway service | `map` | `{}` | no |
+| <a name="input_pushgateway_service_lb_ip"></a> [pushgateway\_service\_lb\_ip](#input\_pushgateway\_service\_lb\_ip) | Load Balancer IP for Pushgateway service | `string` | `""` | no |
+| <a name="input_pushgateway_service_lb_source_ranges"></a> [pushgateway\_service\_lb\_source\_ranges](#input\_pushgateway\_service\_lb\_source\_ranges) | List of source CIDRs allowed to access the Pushgateway LB | `list` | `[]` | no |
+| <a name="input_pushgateway_service_port"></a> [pushgateway\_service\_port](#input\_pushgateway\_service\_port) | Service port for Pushgateway | `number` | `9091` | no |
+| <a name="input_pushgateway_service_type"></a> [pushgateway\_service\_type](#input\_pushgateway\_service\_type) | Type of service for Pushgateway | `string` | `"ClusterIP"` | no |
+| <a name="input_pushgateway_tag"></a> [pushgateway\_tag](#input\_pushgateway\_tag) | Tag for Pushgateway Docker Image | `string` | `"v0.6.0"` | no |
+| <a name="input_pushgateway_tolerations"></a> [pushgateway\_tolerations](#input\_pushgateway\_tolerations) | Tolerations for Pushgateway | `list` | `[]` | no |
+| <a name="input_release_name"></a> [release\_name](#input\_release\_name) | Helm release name for Prometheus | `string` | `"prometheus"` | no |
+| <a name="input_scrape_skip_apiserver_tls_verify"></a> [scrape\_skip\_apiserver\_tls\_verify](#input\_scrape\_skip\_apiserver\_tls\_verify) | Skip verifying TLS Certificate for Kubernetes Master Server Scrape target. Warning: This is insecure | `bool` | `false` | no |
+| <a name="input_scrape_skip_nodes_tls_verify"></a> [scrape\_skip\_nodes\_tls\_verify](#input\_scrape\_skip\_nodes\_tls\_verify) | Skip verifying TLS Certificate for Kubernetes Nodes Scrape target. Warning: This is insecure | `bool` | `false` | no |
+| <a name="input_server_additional_global"></a> [server\_additional\_global](#input\_server\_additional\_global) | YAML string for additional global configuration for Prometheus Server | `string` | `""` | no |
+| <a name="input_server_affinity"></a> [server\_affinity](#input\_server\_affinity) | Affinity for server pods | `map` | `{}` | no |
+| <a name="input_server_alerts"></a> [server\_alerts](#input\_server\_alerts) | Prometheus server alerts entries in YAML. Ref: https://prometheus.io/docs/prometheus/latest/configuration/alerting_rules/ | `string` | `"[]\n# - name: Instances\n#   rules:\n#     - alert: InstanceDown\n#       expr: up == 0\n#       for: 5m\n#       labels:\n#         severity: page\n#       annotations:\n#         description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'\n#         summary: 'Instance {{ $labels.instance }} down'\n"` | no |
+| <a name="input_server_annotations"></a> [server\_annotations](#input\_server\_annotations) | Annotations for server pods | `map` | `{}` | no |
+| <a name="input_server_base_url"></a> [server\_base\_url](#input\_server\_base\_url) | External URL which can access alertmanager | `string` | `""` | no |
+| <a name="input_server_config_override"></a> [server\_config\_override](#input\_server\_config\_override) | Overriding the Prometheus server config file in YAML | `string` | `""` | no |
+| <a name="input_server_data_retention"></a> [server\_data\_retention](#input\_server\_data\_retention) | Prometheus data retention period (i.e 360h) | `string` | `""` | no |
+| <a name="input_server_enable"></a> [server\_enable](#input\_server\_enable) | Deploy Prometheus Server | `string` | `"true"` | no |
+| <a name="input_server_enable_service_links"></a> [server\_enable\_service\_links](#input\_server\_enable\_service\_links) | EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links. | `bool` | `true` | no |
+| <a name="input_server_evaluation_interval"></a> [server\_evaluation\_interval](#input\_server\_evaluation\_interval) | How frequently to evaluate rules | `string` | `"1m"` | no |
+| <a name="input_server_extra_args"></a> [server\_extra\_args](#input\_server\_extra\_args) | Extra arguments for server container | `map` | `{}` | no |
+| <a name="input_server_extra_configmap_mounts"></a> [server\_extra\_configmap\_mounts](#input\_server\_extra\_configmap\_mounts) | Additional Prometheus server ConfigMap mounts | `list` | `[]` | no |
+| <a name="input_server_extra_env"></a> [server\_extra\_env](#input\_server\_extra\_env) | Extra environment variables for server container | `map` | `{}` | no |
+| <a name="input_server_extra_flags"></a> [server\_extra\_flags](#input\_server\_extra\_flags) | Additional flags to control Prometheus server behaviour. | `list` | `[]` | no |
+| <a name="input_server_extra_host_path_mounts"></a> [server\_extra\_host\_path\_mounts](#input\_server\_extra\_host\_path\_mounts) | Additional Prometheus server hostPath mounts | `list` | `[]` | no |
+| <a name="input_server_extra_secret_mounts"></a> [server\_extra\_secret\_mounts](#input\_server\_extra\_secret\_mounts) | Extra secret mounts for server | `list` | `[]` | no |
+| <a name="input_server_extra_volume_mounts"></a> [server\_extra\_volume\_mounts](#input\_server\_extra\_volume\_mounts) | Additional Prometheus server Volume mounts | `list` | `[]` | no |
+| <a name="input_server_extra_volumes"></a> [server\_extra\_volumes](#input\_server\_extra\_volumes) | Additional Prometheus server Volumes | `list` | `[]` | no |
+| <a name="input_server_headless_annotations"></a> [server\_headless\_annotations](#input\_server\_headless\_annotations) | Annotations for server StatefulSet headless service | `map` | `{}` | no |
+| <a name="input_server_headless_labels"></a> [server\_headless\_labels](#input\_server\_headless\_labels) | Labels for server StatefulSet headless service | `map` | `{}` | no |
+| <a name="input_server_ingress_annotations"></a> [server\_ingress\_annotations](#input\_server\_ingress\_annotations) | Annotations for server ingress | `map` | `{}` | no |
+| <a name="input_server_ingress_enabled"></a> [server\_ingress\_enabled](#input\_server\_ingress\_enabled) | Enable ingress for server | `string` | `"false"` | no |
+| <a name="input_server_ingress_extra_labels"></a> [server\_ingress\_extra\_labels](#input\_server\_ingress\_extra\_labels) | Additional labels for server ingress | `map` | `{}` | no |
+| <a name="input_server_ingress_hosts"></a> [server\_ingress\_hosts](#input\_server\_ingress\_hosts) | List of Hosts for server ingress | `list` | `[]` | no |
+| <a name="input_server_ingress_tls"></a> [server\_ingress\_tls](#input\_server\_ingress\_tls) | TLS configurationf or server ingress | `list` | `[]` | no |
+| <a name="input_server_liveness_probe_initial_delay"></a> [server\_liveness\_probe\_initial\_delay](#input\_server\_liveness\_probe\_initial\_delay) | Initial delay before the probe starts checking. You might need to increase this for Prometheus to repair the TSDB servers if your pods keeps getting killed by probes during startup. | `number` | `30` | no |
+| <a name="input_server_liveness_probe_timeout"></a> [server\_liveness\_probe\_timeout](#input\_server\_liveness\_probe\_timeout) | Number of seconds before a probe fails due to timeout | `number` | `10` | no |
+| <a name="input_server_node_selector"></a> [server\_node\_selector](#input\_server\_node\_selector) | Node selector for server pods | `map` | `{}` | no |
+| <a name="input_server_pdb_enable"></a> [server\_pdb\_enable](#input\_server\_pdb\_enable) | Enable PDB | `bool` | `true` | no |
+| <a name="input_server_pdb_max_unavailable"></a> [server\_pdb\_max\_unavailable](#input\_server\_pdb\_max\_unavailable) | Max unavailable pods | `number` | `1` | no |
+| <a name="input_server_pod_security_policy_annotations"></a> [server\_pod\_security\_policy\_annotations](#input\_server\_pod\_security\_policy\_annotations) | PodSecurityPolicy annotations for server | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
+| <a name="input_server_prefix_url"></a> [server\_prefix\_url](#input\_server\_prefix\_url) | The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug so that the various internal URLs are still able to access as they are in the default case. | `string` | `""` | no |
+| <a name="input_server_priority_class_name"></a> [server\_priority\_class\_name](#input\_server\_priority\_class\_name) | Priority Class Name for server pods | `string` | `""` | no |
+| <a name="input_server_pull_policy"></a> [server\_pull\_policy](#input\_server\_pull\_policy) | Image pull policy for server | `string` | `"IfNotPresent"` | no |
+| <a name="input_server_pv_access_modes"></a> [server\_pv\_access\_modes](#input\_server\_pv\_access\_modes) | server data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
+| <a name="input_server_pv_annotations"></a> [server\_pv\_annotations](#input\_server\_pv\_annotations) | Annotations for server PV | `map` | `{}` | no |
+| <a name="input_server_pv_enabled"></a> [server\_pv\_enabled](#input\_server\_pv\_enabled) | Enable persistent volume on server | `string` | `"true"` | no |
+| <a name="input_server_pv_existing_claim"></a> [server\_pv\_existing\_claim](#input\_server\_pv\_existing\_claim) | Use an existing PV claim for server | `string` | `""` | no |
+| <a name="input_server_pv_size"></a> [server\_pv\_size](#input\_server\_pv\_size) | server data Persistent Volume size | `string` | `"8Gi"` | no |
+| <a name="input_server_readiness_probe_initial_delay"></a> [server\_readiness\_probe\_initial\_delay](#input\_server\_readiness\_probe\_initial\_delay) | Initial delay before the probe starts checking. You might need to increase this for Prometheus to repair the TSDB servers if your pods keeps getting killed by probes during startup. | `number` | `30` | no |
+| <a name="input_server_readiness_probe_timeout"></a> [server\_readiness\_probe\_timeout](#input\_server\_readiness\_probe\_timeout) | Number of seconds before a probe fails due to timeout | `number` | `10` | no |
+| <a name="input_server_replica"></a> [server\_replica](#input\_server\_replica) | Number of replicas for server | `number` | `1` | no |
+| <a name="input_server_repository"></a> [server\_repository](#input\_server\_repository) | Docker repository for server | `string` | `"prom/prometheus"` | no |
+| <a name="input_server_resources"></a> [server\_resources](#input\_server\_resources) | Resources for server | `map` | `{}` | no |
+| <a name="input_server_rules"></a> [server\_rules](#input\_server\_rules) | Prometheus server rules entries in YAML | `string` | `"[]\n# - name: k8s_health\n#   rules:\n#     - record: k8s_container_oom\n#       expr: increase(kube_pod_container_status_last_terminated_reason{reason=\"OOMKilled\"}[2m]) and on(pod) increase(kube_pod_container_status_restarts_total[2m])\n"` | no |
+| <a name="input_server_scrape_interval"></a> [server\_scrape\_interval](#input\_server\_scrape\_interval) | How frequently to scrape targets by default | `string` | `"1m"` | no |
+| <a name="input_server_scrape_timeout"></a> [server\_scrape\_timeout](#input\_server\_scrape\_timeout) | How long until a scrape request times out | `string` | `"10s"` | no |
+| <a name="input_server_security_context"></a> [server\_security\_context](#input\_server\_security\_context) | Security context for server pods defined as a map which will be serialized to JSON.<br>  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and<br>  this will not work for fields like `runAsUser`. Specify a JSON string with<br>  `server_security_context_json` instead | `map` | `{}` | no |
+| <a name="input_server_security_context_json"></a> [server\_security\_context\_json](#input\_server\_security\_context\_json) | JSON string for security context for server pods | `string` | `""` | no |
+| <a name="input_server_service_account"></a> [server\_service\_account](#input\_server\_service\_account) | Name of the service account for server. Defaults to component's fully qualified name. | `string` | `""` | no |
+| <a name="input_server_service_account_annotations"></a> [server\_service\_account\_annotations](#input\_server\_service\_account\_annotations) | Annotations for the service account | `map` | `{}` | no |
+| <a name="input_server_service_annotations"></a> [server\_service\_annotations](#input\_server\_service\_annotations) | Annotations for server service | `map` | <pre>{<br>  "prometheus.io/probe": "server"<br>}</pre> | no |
+| <a name="input_server_service_cluster_ip"></a> [server\_service\_cluster\_ip](#input\_server\_service\_cluster\_ip) | Cluster IP for server Service | `string` | `""` | no |
+| <a name="input_server_service_external_ips"></a> [server\_service\_external\_ips](#input\_server\_service\_external\_ips) | External IPs for server service | `list` | `[]` | no |
+| <a name="input_server_service_labels"></a> [server\_service\_labels](#input\_server\_service\_labels) | Labels for server service | `map` | `{}` | no |
+| <a name="input_server_service_lb_ip"></a> [server\_service\_lb\_ip](#input\_server\_service\_lb\_ip) | Load Balancer IP for server service | `string` | `""` | no |
+| <a name="input_server_service_lb_source_ranges"></a> [server\_service\_lb\_source\_ranges](#input\_server\_service\_lb\_source\_ranges) | List of source CIDRs allowed to access the server LB | `list` | `[]` | no |
+| <a name="input_server_service_port"></a> [server\_service\_port](#input\_server\_service\_port) | Service port for server | `number` | `9091` | no |
+| <a name="input_server_service_type"></a> [server\_service\_type](#input\_server\_service\_type) | Type of service for server | `string` | `"ClusterIP"` | no |
+| <a name="input_server_sidecar_containers"></a> [server\_sidecar\_containers](#input\_server\_sidecar\_containers) | Sidecar containers for server | `list` | `[]` | no |
+| <a name="input_server_statefulset_annotations"></a> [server\_statefulset\_annotations](#input\_server\_statefulset\_annotations) | Annotations for server StatefulSet | `map` | `{}` | no |
+| <a name="input_server_tag"></a> [server\_tag](#input\_server\_tag) | Tag for server Docker Image | `string` | `"v2.8.1"` | no |
+| <a name="input_server_termination_grace_seconds"></a> [server\_termination\_grace\_seconds](#input\_server\_termination\_grace\_seconds) | Prometheus server pod termination grace period | `string` | `"300"` | no |
+| <a name="input_server_tolerations"></a> [server\_tolerations](#input\_server\_tolerations) | Tolerations for server | `list` | `[]` | no |
 
 ## Outputs
 
 | Name | Description |
 |------|-------------|
-| prometheus\_alerts\_api\_url | Prometheus query API URL: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries |
-| prometheus\_query\_api\_url | Prometheus query API URL: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries |
+| <a name="output_prometheus_alerts_api_url"></a> [prometheus\_alerts\_api\_url](#output\_prometheus\_alerts\_api\_url) | Prometheus query API URL: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries |
+| <a name="output_prometheus_query_api_url"></a> [prometheus\_query\_api\_url](#output\_prometheus\_query\_api\_url) | Prometheus query API URL: https://prometheus.io/docs/prometheus/latest/querying/api/#expression-queries |

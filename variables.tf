@@ -1,3 +1,8 @@
+variable "prometheus_enable" {
+  description = "Enable Prometheus stack. Disable to use independent components like KSM and Node Exporter."
+  default     = true
+}
+
 variable "release_name" {
   description = "Helm release name for Prometheus"
   default     = "prometheus"
@@ -638,13 +643,33 @@ variable "node_exporter_enable" {
   default     = "true"
 }
 
-variable "node_exporter_host_network" {
-  description = "Use the Host network namespace for Node Exporter"
-  default     = "true"
+variable "node_exporter_release_name" {
+  description = "Helm release name for Node Exporter"
+  default     = "prometheus-node-exporter"
 }
 
-variable "node_exporter_host_pid" {
-  description = "Use the Network PID namespace for Node Exporter"
+variable "node_exporter_chart_name" {
+  description = "Helm chart name to provision for Node Exporter"
+  default     = "prometheus-node-exporter"
+}
+
+variable "node_exporter_chart_repository" {
+  description = "Helm repository for the Node Exporter chart"
+  default     = "https://prometheus-community.github.io/helm-charts"
+}
+
+variable "node_exporter_chart_version" {
+  description = "Version of Node Exporter Chart to install. Set to empty to install the latest version"
+  default     = ""
+}
+
+variable "node_exporter_chart_namespace" {
+  description = "Namespace to install the chart into"
+  default     = "default"
+}
+
+variable "node_exporter_host_network" {
+  description = "Use the Host network namespace for Node Exporter"
   default     = "true"
 }
 
@@ -698,11 +723,6 @@ variable "node_exporter_node_selector" {
   default     = {}
 }
 
-variable "node_exporter_replica" {
-  description = "Number of replicas for Node Exporter"
-  default     = 1
-}
-
 variable "node_exporter_resources" {
   description = "Resources for node_exporter"
   default     = {}
@@ -733,31 +753,6 @@ variable "node_exporter_service_annotations" {
   }
 }
 
-variable "node_exporter_service_labels" {
-  description = "Labels for Node Exporter service"
-  default     = {}
-}
-
-variable "node_exporter_service_cluster_ip" {
-  description = "Cluster IP for Node Exporter Service"
-  default     = "None"
-}
-
-variable "node_exporter_service_external_ips" {
-  description = "External IPs for Node Exporter service"
-  default     = []
-}
-
-variable "node_exporter_service_lb_ip" {
-  description = "Load Balancer IP for Node Exporter service"
-  default     = ""
-}
-
-variable "node_exporter_service_lb_source_ranges" {
-  description = "List of source CIDRs allowed to access the Node Exporter LB"
-  default     = []
-}
-
 variable "node_exporter_service_port" {
   description = "Service port for Node Exporter"
   default     = 9100
@@ -786,16 +781,6 @@ variable "node_exporter_pod_security_policy_annotations" {
     "seccomp.security.alpha.kubernetes.io/defaultProfileName"  = "runtime/default"
     "apparmor.security.beta.kubernetes.io/defaultProfileName"  = "runtime/default"
   }
-}
-
-variable "node_exporter_pdb_enable" {
-  description = "Enable PDB"
-  default     = true
-}
-
-variable "node_exporter_pdb_max_unavailable" {
-  description = "Max unavailable pods"
-  default     = 1
 }
 
 ################################

@@ -1,8 +1,7 @@
 locals {
-  prometheus_server_url       = "http://${helm_release.prometheus.metadata[0].name}-server.${helm_release.prometheus.metadata[0].namespace}.svc.cluster.local:${var.server_service_port}"
-  prometheus_alertmanager_url = "http://${helm_release.prometheus.metadata[0].name}-alertmanager.${helm_release.prometheus.metadata[0].namespace}.svc.cluster.local:${var.alertmanager_service_port}"
+  prometheus_server_url = var.prometheus_enable ? "http://${helm_release.prometheus[0].metadata[0].name}-server.${helm_release.prometheus[0].metadata[0].namespace}.svc.cluster.local:${var.server_service_port}" : ""
 
-  prometheus_query_api_url  = coalesce(var.prometheus_remote_read_api_url, local.prometheus_server_url)
+  prometheus_query_api_url  = var.prometheus_remote_read_api_url != null && var.prometheus_remote_read_api_url != "" ? var.prometheus_remote_read_api_url : local.prometheus_server_url
   prometheus_alerts_api_url = local.prometheus_server_url
 
   server_extra_flags = distinct(concat(var.server_extra_flags, ["web.enable-lifecycle"]))

@@ -1,140 +1,156 @@
-nodeExporter:
-  ## If false, node-exporter will not be installed
+# Default values for prometheus-node-exporter.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+image:
+  repository: ${repository}
+  tag: ${tag}
+  pullPolicy: ${pull_policy}
+
+service:
+  type: ${service_type}
+  port: ${service_port}
+  targetPort: 9100
+  annotations: ${service_annotations}
+
+prometheus:
+  monitor:
+    enabled: false
+
+## Customize the updateStrategy if set
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 1
+
+resources: ${resources}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 200m
+  #   memory: 50Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 30Mi
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+  annotations: {}
+  imagePullSecrets: []
+
+securityContext: ${security_context}
+
+containerSecurityContext: {}
+  # capabilities:
+  #   add:
+  #   - SYS_TIME
+
+rbac:
+  ## If true, create & use RBAC resources
   ##
-  enabled: ${enable}
+  create: true
+  ## If true, create & use Pod Security Policy resources
+  ## https://kubernetes.io/docs/concepts/policy/pod-security-policy/
+  pspEnabled: ${pod_security_policy_enable}
+  pspAnnotations: ${pod_security_policy_annotations}
 
-  ## If true, node-exporter pods share the host network namespace
-  ##
-  hostNetwork: ${host_network}
+# for deployments that have node_exporter deployed outside of the cluster, list
+# their addresses here
+endpoints: []
 
-  ## If true, node-exporter pods share the host PID namespace
-  ##
-  hostPID: ${host_pid}
+# Expose the service to the host network
+hostNetwork: ${host_network}
 
-  ## node-exporter container name
-  ##
-  name: node-exporter
+## If true, node-exporter pods mounts host / at /host/root
+##
+hostRootFsMount: true
 
-  ## node-exporter container image
-  ##
-  image:
-    repository: ${repository}
-    tag: ${tag}
-    pullPolicy: ${pull_policy}
+## Assign a group of affinity scheduling rules
+##
+affinity: {}
+#   nodeAffinity:
+#     requiredDuringSchedulingIgnoredDuringExecution:
+#       nodeSelectorTerms:
+#         - matchFields:
+#             - key: metadata.name
+#               operator: In
+#               values:
+#                 - target-host-name
 
-  ## Specify if a Pod Security Policy for node-exporter must be created
-  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-  ##
-  podSecurityPolicy:
-    annotations: ${pod_security_policy_annotations}
-      ## Specify pod annotations
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
-      ##
-      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
-      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+# Annotations to be added to node exporter pods
+podAnnotations: ${annotations}
 
-  ## node-exporter priorityClassName
-  ##
-  priorityClassName: ${priority_class_name}
+# Extra labels to be added to node exporter pods
+podLabels: ${labels}
 
-  ## Custom Update Strategy
-  ##
-  updateStrategy:
-    type: RollingUpdate
+# Custom DNS configuration to be added to prometheus-node-exporter pods
+dnsConfig: {}
+# nameservers:
+#   - 1.2.3.4
+# searches:
+#   - ns1.svc.cluster-domain.example
+#   - my.dns.search.suffix
+# options:
+#   - name: ndots
+#     value: "2"
+#   - name: edns0
 
-  ## Additional node-exporter container arguments
-  ##
-  extraArgs: ${extra_args}
+## Assign a nodeSelector if operating a hybrid cluster
+##
+nodeSelector: ${node_selector}
+#   beta.kubernetes.io/arch: amd64
+#   beta.kubernetes.io/os: linux
 
-  ## Additional node-exporter hostPath mounts
-  ##
-  extraHostPathMounts: ${host_path_mounts}
-    # - name: textfile-dir
-    #   mountPath: /srv/txt_collector
-    #   hostPath: /var/lib/node-exporter
-    #   readOnly: true
+tolerations: ${tolerations}
 
-  extraConfigmapMounts: ${config_map_mounts}
-    # - name: certs-configmap
-    #   mountPath: /prometheus
-    #   configMap: certs-configmap
-    #   readOnly: true
+## Assign a PriorityClassName to pods if set
+priorityClassName: ${priority_class_name}
 
-  ## Node tolerations for node-exporter scheduling to nodes with taints
-  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
-  ##
-  tolerations: ${tolerations}
-    # - key: "key"
-    #   operator: "Equal|Exists"
-    #   value: "value"
-    #   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+## Additional container arguments
+##
+extraArgs: ${extra_args}
+#   - --collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v)d[a-z]|nvme\\d+n\\d+p)\\d+$
+#   - --collector.textfile.directory=/run/prometheus
 
-  ## Node labels for node-exporter pod assignment
-  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
-  ##
-  nodeSelector: ${node_selector}
+## Additional mounts from the host
+##
+extraHostVolumeMounts: ${host_path_mounts}
+#  - name: <mountName>
+#    hostPath: <hostPath>
+#    mountPath: <mountPath>
+#    readOnly: true|false
+#    mountPropagation: None|HostToContainer|Bidirectional
 
-  ## Annotations to be added to node-exporter pods
-  ##
-  podAnnotations: ${annotations}
+## Additional configmaps to be mounted.
+##
+configmaps: ${config_map_mounts}
+# - name: <configMapName>
+#   mountPath: <mountPath>
+secrets: []
+# - name: <secretName>
+#   mountPath: <mountPatch>
+## Override the deployment namespace
+##
+namespaceOverride: ""
 
-  ## Labels to be added to node-exporter pods
-  ##
-  pod:
-    labels: ${labels}
+## Additional containers for export metrics to text file
+##
+sidecars: []
+##  - name: nvidia-dcgm-exporter
+##    image: nvidia/dcgm-exporter:1.4.3
 
-  podDisruptionBudget:
-    enabled: ${pdb_enable}
-    maxUnavailable: ${pdb_max_unavailable}
+## Volume for sidecar containers
+##
+sidecarVolumeMount: []
+##  - name: collector-textfiles
+##    mountPath: /run/prometheus
+##    readOnly: false
 
-  ## node-exporter resource limits & requests
-  ## Ref: https://kubernetes.io/docs/user-guide/compute-resources/
-  ##
-  resources: ${resources}
-    # limits:
-    #   cpu: 200m
-    #   memory: 50Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 30Mi
-
-  ## Security context to be added to node-exporter pods
-  ##
-  securityContext: ${security_context}
-    # runAsUser: 0
-
-  service:
-    annotations: ${service_annotations}
-    labels: ${service_labels}
-
-    # Exposed as a headless service:
-    # https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
-    clusterIP: ${service_cluster_ip}
-
-    ## List of IP addresses at which the node-exporter service is available
-    ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
-    ##
-    externalIPs: ${service_external_ips}
-
-    hostPort: 9100
-    loadBalancerIP: ${service_lb_ip}
-    loadBalancerSourceRanges: ${service_lb_source_ranges}
-    servicePort: ${service_port}
-    type: ${service_type}
-
-  ## Specify if a Pod Security Policy for node-exporter must be created
-  ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/
-  ##
-  podSecurityPolicy:
-    annotations: ${pod_security_policy_annotations}
-      ## Specify pod annotations
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
-      ##
-      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
-      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+## Additional InitContainers to initialize the pod
+##
+extraInitContainers: []
