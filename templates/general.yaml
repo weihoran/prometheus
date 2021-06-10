@@ -10,13 +10,9 @@ imagePullSecrets: ${image_pull_secrets}
 ##
 serviceAccounts:
   alertmanager:
-    create: true
-    name: ${alertmanager_service_account}
-    annotations: ${alertmanager_service_account_annotations}
+    create: false
   nodeExporter:
-    create: true
-    name: ${node_exporter_service_account}
-    annotations: ${node_exporter_service_account_annotations}
+    create: false
   pushgateway:
     create: true
     name: ${pushgateway_service_account}
@@ -69,43 +65,7 @@ configmapReload:
     resources: ${configmap_resources}
 
   alertmanager:
-    ## If false, the configmap-reload container will not be deployed
-    ##
-    enabled: true
-
-    ## configmap-reload container name
-    ##
-    name: ${configmap_name}
-
-    ## configmap-reload container image
-    ##
-    image:
-      repository: ${configmap_image_repo}
-      tag: ${configmap_image_tag}
-      pullPolicy: ${configmap_image_pull_policy}
-
-    ## Additional configmap-reload container arguments
-    ##
-    extraArgs: ${configmap_extra_args}
-    ## Additional configmap-reload volume directories
-    ##
-    extraVolumeDirs: ${configmap_extra_args}
-
-
-    ## Additional configmap-reload mounts
-    ##
-    extraConfigmapMounts: ${configmap_extra_volumes}
-      # - name: prometheus-alerts
-      #   mountPath: /etc/alerts.d
-      #   subPath: ""
-      #   configMap: prometheus-alerts
-      #   readOnly: true
-
-
-    ## configmap-reload resource requests and limits
-    ## Ref: http://kubernetes.io/docs/user-guide/compute-resources/
-    ##
-    resources: ${configmap_resources}
+    enabled: false
 
 # adds additional scrape configs to prometheus.yml
 # must be a string so you have to add a | after extraScrapeConfigs:
@@ -126,14 +86,6 @@ extraScrapeConfigs: ${extra_scrape_configs}
   #     - target_label: __address__
   #       replacement: prometheus-blackbox-exporter:9115
 
-# Adds option to add alert_relabel_configs to avoid duplicate alerts in alertmanager
-# useful in H/A prometheus with different external labels but the same alerts
-alertRelabelConfigs: ${alert_relabel_configs}
-  # alert_relabel_configs:
-  # - source_labels: [dc]
-  #   regex: (.+)\d+
-  #   target_label: dc
-
 networkPolicy:
   ## Enable creation of NetworkPolicy resources.
   ##
@@ -145,6 +97,10 @@ kubeStateMetrics:
   ##
   enabled: false
 
-# Disable component
+# Use the standalone Node Exporter chart
 nodeExporter:
+  enabled: false
+
+# Use the standalone Alertmanager chart
+alertmanager:
   enabled: false

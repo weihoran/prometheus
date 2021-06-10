@@ -39,8 +39,8 @@ serviceAccount:
   create: true
   # The name of the ServiceAccount to use.
   # If not set and create is true, a name is generated using the fullname template
-  name:
-  annotations: {}
+  name: ${service_account}
+  annotations: ${service_account_annotations}
   imagePullSecrets: []
 
 securityContext: ${security_context}

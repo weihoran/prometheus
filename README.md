@@ -26,6 +26,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [helm_release.alertmanager](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.kube_state_metrics](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.node_exporter](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
 | [helm_release.prometheus](https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release) | resource |
@@ -34,37 +35,25 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_alert_relabel_configs"></a> [alert\_relabel\_configs](#input\_alert\_relabel\_configs) | Adds option to add alert\_relabel\_configs to avoid duplicate alerts in alertmanager useful in H/A prometheus with different external labels but the same alerts | `map` | `{}` | no |
 | <a name="input_alertmanager_affinity"></a> [alertmanager\_affinity](#input\_alertmanager\_affinity) | Affinity for alertmanager pods | `map` | `{}` | no |
 | <a name="input_alertmanager_annotations"></a> [alertmanager\_annotations](#input\_alertmanager\_annotations) | Annotations for Alertmanager pods | `map` | `{}` | no |
-| <a name="input_alertmanager_base_url"></a> [alertmanager\_base\_url](#input\_alertmanager\_base\_url) | External URL which can access alertmanager | `string` | `"/"` | no |
-| <a name="input_alertmanager_config_file_name"></a> [alertmanager\_config\_file\_name](#input\_alertmanager\_config\_file\_name) | The configuration file name to be loaded to alertmanager Must match the key within configuration loaded from ConfigMap/Secret | `string` | `"alertmanager.yml"` | no |
-| <a name="input_alertmanager_config_from_secret"></a> [alertmanager\_config\_from\_secret](#input\_alertmanager\_config\_from\_secret) | The name of a secret in the same kubernetes namespace which contains the Alertmanager config Defining configFromSecret will cause templates/alertmanager-configmap.yaml to NOT generate a ConfigMap resource | `string` | `""` | no |
-| <a name="input_alertmanager_config_map_override_name"></a> [alertmanager\_config\_map\_override\_name](#input\_alertmanager\_config\_map\_override\_name) | ConfigMap override where fullname is {{.Release.Name}}-{{.Values.alertmanager.configMapOverrideName} Defining configMapOverrideName will cause templates/alertmanager-configmap.yaml to NOT generate a ConfigMap resource | `string` | `""` | no |
-| <a name="input_alertmanager_enable"></a> [alertmanager\_enable](#input\_alertmanager\_enable) | Enable Alert manager | `string` | `"true"` | no |
+| <a name="input_alertmanager_chart_name"></a> [alertmanager\_chart\_name](#input\_alertmanager\_chart\_name) | Helm Alertmanager chart name to provision | `string` | `"alertmanager"` | no |
+| <a name="input_alertmanager_chart_namespace"></a> [alertmanager\_chart\_namespace](#input\_alertmanager\_chart\_namespace) | Namespace to install the Alertmanager chart into | `string` | `"default"` | no |
+| <a name="input_alertmanager_chart_repository"></a> [alertmanager\_chart\_repository](#input\_alertmanager\_chart\_repository) | Helm repository for the Alertmanager chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
+| <a name="input_alertmanager_chart_version"></a> [alertmanager\_chart\_version](#input\_alertmanager\_chart\_version) | Version of Alertmanager chart to install. Set to empty to install the latest version | `string` | `""` | no |
+| <a name="input_alertmanager_config"></a> [alertmanager\_config](#input\_alertmanager\_config) | Additional ConfigMap entries for Alertmanager in YAML string | `string` | `"global: {}\n  # slack_api_url: ''\n\ntemplates:\n  - '/etc/alertmanager/*.tmpl'\n\nreceivers:\n  - name: default-receiver\n    # slack_configs:\n    #  - channel: '@you'\n    #    send_resolved: true\n\nroute:\n  group_wait: 10s\n  group_interval: 5m\n  receiver: default-receiver\n  repeat_interval: 3h\n"` | no |
+| <a name="input_alertmanager_enable"></a> [alertmanager\_enable](#input\_alertmanager\_enable) | Enable Alertmanager | `string` | `"true"` | no |
 | <a name="input_alertmanager_extra_args"></a> [alertmanager\_extra\_args](#input\_alertmanager\_extra\_args) | Extra arguments for Alertmanager container | `map` | `{}` | no |
-| <a name="input_alertmanager_extra_env"></a> [alertmanager\_extra\_env](#input\_alertmanager\_extra\_env) | Extra environment variables for Alertmanager container | `map` | `{}` | no |
-| <a name="input_alertmanager_extra_secret_mounts"></a> [alertmanager\_extra\_secret\_mounts](#input\_alertmanager\_extra\_secret\_mounts) | Defines additional mounts with secrets. Secrets must be manually created in the namespace. | `list` | `[]` | no |
-| <a name="input_alertmanager_files"></a> [alertmanager\_files](#input\_alertmanager\_files) | Additional ConfigMap entries for Alertmanager in YAML string | `string` | `"alertmanager.yml:\n  global: {}\n    # slack_api_url: ''\n\n  receivers:\n    - name: default-receiver\n      # slack_configs:\n      #  - channel: '@you'\n      #    send_resolved: true\n\n  route:\n    group_wait: 10s\n    group_interval: 5m\n    receiver: default-receiver\n    repeat_interval: 3h\n"` | no |
-| <a name="input_alertmanager_headless_annotations"></a> [alertmanager\_headless\_annotations](#input\_alertmanager\_headless\_annotations) | Annotations for alertmanager StatefulSet headless service | `map` | `{}` | no |
-| <a name="input_alertmanager_headless_labels"></a> [alertmanager\_headless\_labels](#input\_alertmanager\_headless\_labels) | Labels for alertmanager StatefulSet headless service | `map` | `{}` | no |
 | <a name="input_alertmanager_ingress_annotations"></a> [alertmanager\_ingress\_annotations](#input\_alertmanager\_ingress\_annotations) | Annotations for Alertmanager ingress | `map` | `{}` | no |
 | <a name="input_alertmanager_ingress_enabled"></a> [alertmanager\_ingress\_enabled](#input\_alertmanager\_ingress\_enabled) | Enable ingress for Alertmanager | `string` | `"false"` | no |
-| <a name="input_alertmanager_ingress_extra_labels"></a> [alertmanager\_ingress\_extra\_labels](#input\_alertmanager\_ingress\_extra\_labels) | Additional labels for Alertmanager ingress | `map` | `{}` | no |
 | <a name="input_alertmanager_ingress_hosts"></a> [alertmanager\_ingress\_hosts](#input\_alertmanager\_ingress\_hosts) | List of Hosts for Alertmanager ingress | `list` | `[]` | no |
 | <a name="input_alertmanager_ingress_tls"></a> [alertmanager\_ingress\_tls](#input\_alertmanager\_ingress\_tls) | TLS configurationf or Alertmanager ingress | `list` | `[]` | no |
 | <a name="input_alertmanager_node_selector"></a> [alertmanager\_node\_selector](#input\_alertmanager\_node\_selector) | Node selector for alertmanager pods | `map` | `{}` | no |
-| <a name="input_alertmanager_pdb_enable"></a> [alertmanager\_pdb\_enable](#input\_alertmanager\_pdb\_enable) | Enable PDB | `bool` | `true` | no |
-| <a name="input_alertmanager_pdb_max_unavailable"></a> [alertmanager\_pdb\_max\_unavailable](#input\_alertmanager\_pdb\_max\_unavailable) | Max unavailable pods for Alertmanager | `number` | `1` | no |
-| <a name="input_alertmanager_pod_security_policy_annotations"></a> [alertmanager\_pod\_security\_policy\_annotations](#input\_alertmanager\_pod\_security\_policy\_annotations) | PodSecurityPolicy annotations for alertmanager | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/allowedProfileNames": "docker/default,runtime/default",<br>  "seccomp.security.alpha.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
-| <a name="input_alertmanager_prefix_url"></a> [alertmanager\_prefix\_url](#input\_alertmanager\_prefix\_url) | The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug so that the various internal URLs are still able to access as they are in the default case. | `string` | `""` | no |
-| <a name="input_alertmanager_priority_class_name"></a> [alertmanager\_priority\_class\_name](#input\_alertmanager\_priority\_class\_name) | Priority Class Name for Alertmanager pods | `string` | `""` | no |
 | <a name="input_alertmanager_pull_policy"></a> [alertmanager\_pull\_policy](#input\_alertmanager\_pull\_policy) | Image pull policy for Alertmanager | `string` | `"IfNotPresent"` | no |
 | <a name="input_alertmanager_pv_access_modes"></a> [alertmanager\_pv\_access\_modes](#input\_alertmanager\_pv\_access\_modes) | alertmanager data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
-| <a name="input_alertmanager_pv_annotations"></a> [alertmanager\_pv\_annotations](#input\_alertmanager\_pv\_annotations) | Annotations for Alertmanager PV | `map` | `{}` | no |
 | <a name="input_alertmanager_pv_enabled"></a> [alertmanager\_pv\_enabled](#input\_alertmanager\_pv\_enabled) | Enable persistent volume on Alertmanager | `string` | `"true"` | no |
-| <a name="input_alertmanager_pv_existing_claim"></a> [alertmanager\_pv\_existing\_claim](#input\_alertmanager\_pv\_existing\_claim) | Use an existing PV claim for alertmanager | `string` | `""` | no |
 | <a name="input_alertmanager_pv_size"></a> [alertmanager\_pv\_size](#input\_alertmanager\_pv\_size) | alertmanager data Persistent Volume size | `string` | `"2Gi"` | no |
+| <a name="input_alertmanager_release_name"></a> [alertmanager\_release\_name](#input\_alertmanager\_release\_name) | Helm release name for Alertmanager | `string` | `"alertmanager"` | no |
 | <a name="input_alertmanager_replica"></a> [alertmanager\_replica](#input\_alertmanager\_replica) | Number of replicas for AlertManager | `number` | `1` | no |
 | <a name="input_alertmanager_repository"></a> [alertmanager\_repository](#input\_alertmanager\_repository) | Docker repository for Alert Manager | `string` | `"prom/alertmanager"` | no |
 | <a name="input_alertmanager_resources"></a> [alertmanager\_resources](#input\_alertmanager\_resources) | Resources for alertmanager | `map` | `{}` | no |
@@ -73,18 +62,11 @@ No modules.
 | <a name="input_alertmanager_service_account"></a> [alertmanager\_service\_account](#input\_alertmanager\_service\_account) | Name of the service account for AlertManager. Defaults to component's fully qualified name. | `string` | `""` | no |
 | <a name="input_alertmanager_service_account_annotations"></a> [alertmanager\_service\_account\_annotations](#input\_alertmanager\_service\_account\_annotations) | Annotations for the service account | `map` | `{}` | no |
 | <a name="input_alertmanager_service_annotations"></a> [alertmanager\_service\_annotations](#input\_alertmanager\_service\_annotations) | Annotations for Alertmanager service | `map` | `{}` | no |
-| <a name="input_alertmanager_service_cluster_ip"></a> [alertmanager\_service\_cluster\_ip](#input\_alertmanager\_service\_cluster\_ip) | Cluster IP for Alertmanager Service | `string` | `""` | no |
-| <a name="input_alertmanager_service_external_ips"></a> [alertmanager\_service\_external\_ips](#input\_alertmanager\_service\_external\_ips) | External IPs for Alertmanager service | `list` | `[]` | no |
-| <a name="input_alertmanager_service_labels"></a> [alertmanager\_service\_labels](#input\_alertmanager\_service\_labels) | Labels for Alertmanager service | `map` | `{}` | no |
-| <a name="input_alertmanager_service_lb_ip"></a> [alertmanager\_service\_lb\_ip](#input\_alertmanager\_service\_lb\_ip) | Load Balancer IP for Alertmanager service | `string` | `""` | no |
-| <a name="input_alertmanager_service_lb_source_ranges"></a> [alertmanager\_service\_lb\_source\_ranges](#input\_alertmanager\_service\_lb\_source\_ranges) | List of source CIDRs allowed to access the Alertmanager LB | `list` | `[]` | no |
 | <a name="input_alertmanager_service_port"></a> [alertmanager\_service\_port](#input\_alertmanager\_service\_port) | Service port for Alertmanager | `number` | `80` | no |
 | <a name="input_alertmanager_service_type"></a> [alertmanager\_service\_type](#input\_alertmanager\_service\_type) | Type of service for Alertmanager | `string` | `"ClusterIP"` | no |
 | <a name="input_alertmanager_storage_class"></a> [alertmanager\_storage\_class](#input\_alertmanager\_storage\_class) | Storage class for alertmanager PV. If set to "-", storageClassName: "", which disables dynamic provisioning | `string` | `""` | no |
-| <a name="input_alertmanager_sub_path"></a> [alertmanager\_sub\_path](#input\_alertmanager\_sub\_path) | Subdirectory of alertmanager data Persistent Volume to mount | `string` | `""` | no |
 | <a name="input_alertmanager_tag"></a> [alertmanager\_tag](#input\_alertmanager\_tag) | Tag for Alertmanager Docker Image | `string` | `"v0.16.1"` | no |
 | <a name="input_alertmanager_tolerations"></a> [alertmanager\_tolerations](#input\_alertmanager\_tolerations) | Tolerations for Alertmanager | `list` | `[]` | no |
-| <a name="input_alertmanager_volume_binding_mode"></a> [alertmanager\_volume\_binding\_mode](#input\_alertmanager\_volume\_binding\_mode) | Alertmanager data Persistent Volume Binding Mode | `string` | `""` | no |
 | <a name="input_chart_name"></a> [chart\_name](#input\_chart\_name) | Helm chart name to provision | `string` | `"prometheus"` | no |
 | <a name="input_chart_namespace"></a> [chart\_namespace](#input\_chart\_namespace) | Namespace to install the chart into | `string` | `"default"` | no |
 | <a name="input_chart_repository"></a> [chart\_repository](#input\_chart\_repository) | Helm repository for the chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |

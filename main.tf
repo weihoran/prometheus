@@ -11,7 +11,6 @@ resource "helm_release" "prometheus" {
 
   values = [
     templatefile("${path.module}/templates/general.yaml", local.general_values),
-    templatefile("${path.module}/templates/alertmanager.yaml", local.alertmanager_values),
     templatefile("${path.module}/templates/pushgateway.yaml", local.pushgateway_values),
     templatefile("${path.module}/templates/server.yaml", local.server_values),
   ]
@@ -35,84 +34,11 @@ locals {
     extra_scrape_configs  = jsonencode(var.extra_scrape_configs)
     enable_network_policy = var.enable_network_policy
 
-    alert_relabel_configs = jsonencode(var.alert_relabel_configs)
+    pushgateway_service_account = var.pushgateway_service_account
+    server_service_account      = var.server_service_account
 
-    alertmanager_service_account  = var.alertmanager_service_account
-    node_exporter_service_account = var.node_exporter_service_account
-    pushgateway_service_account   = var.pushgateway_service_account
-    server_service_account        = var.server_service_account
-
-    alertmanager_service_account_annotations  = jsonencode(var.alertmanager_service_account_annotations)
-    node_exporter_service_account_annotations = jsonencode(var.node_exporter_service_account_annotations)
-    pushgateway_service_account_annotations   = jsonencode(var.pushgateway_service_account_annotations)
-    server_service_account_annotations        = jsonencode(var.server_service_account_annotations)
-  }
-
-  alertmanager_values = {
-    enable = var.alertmanager_enable
-
-    repository  = var.alertmanager_repository
-    tag         = var.alertmanager_tag
-    pull_policy = var.alertmanager_pull_policy
-
-    replica   = var.alertmanager_replica
-    resources = jsonencode(var.alertmanager_resources)
-
-    annotations   = jsonencode(var.alertmanager_annotations)
-    tolerations   = jsonencode(var.alertmanager_tolerations)
-    node_selector = jsonencode(var.alertmanager_node_selector)
-    affinity      = jsonencode(var.alertmanager_affinity)
-
-    security_context = coalesce(
-      var.alertmanager_security_context_json,
-      jsonencode(var.alertmanager_security_context),
-    )
-
-    priority_class_name = var.alertmanager_priority_class_name
-    extra_args          = jsonencode(var.alertmanager_extra_args)
-    extra_env           = jsonencode(var.alertmanager_extra_env)
-    extra_secret_mounts = jsonencode(var.alertmanager_extra_secret_mounts)
-
-    prefix_url = var.alertmanager_prefix_url
-    base_url   = var.alertmanager_base_url
-
-    config_map_override_name = var.alertmanager_config_map_override_name
-    config_from_secret       = var.alertmanager_config_from_secret
-    config_file_name         = var.alertmanager_config_file_name
-
-    headless_annotations = jsonencode(var.alertmanager_headless_annotations)
-    headless_labels      = jsonencode(var.alertmanager_headless_labels)
-
-    service_annotations      = jsonencode(var.alertmanager_service_annotations)
-    service_labels           = jsonencode(var.alertmanager_service_labels)
-    service_cluster_ip       = jsonencode(var.alertmanager_service_cluster_ip)
-    service_external_ips     = jsonencode(var.alertmanager_service_external_ips)
-    service_lb_ip            = jsonencode(var.alertmanager_service_lb_ip)
-    service_lb_source_ranges = jsonencode(var.alertmanager_service_lb_source_ranges)
-    service_port             = var.alertmanager_service_port
-    service_type             = var.alertmanager_service_type
-
-    ingress_enabled      = var.alertmanager_ingress_enabled
-    ingress_annotations  = jsonencode(var.alertmanager_ingress_annotations)
-    ingress_extra_labels = jsonencode(var.alertmanager_ingress_extra_labels)
-    ingress_hosts        = jsonencode(var.alertmanager_ingress_hosts)
-    ingress_tls          = jsonencode(var.alertmanager_ingress_tls)
-
-    pv_enabled          = var.alertmanager_pv_enabled
-    pv_access_modes     = jsonencode(var.alertmanager_pv_access_modes)
-    pv_annotations      = jsonencode(var.alertmanager_pv_annotations)
-    pv_existing_claim   = var.alertmanager_pv_existing_claim
-    pv_size             = var.alertmanager_pv_size
-    storage_class       = var.alertmanager_storage_class
-    volume_binding_mode = var.alertmanager_volume_binding_mode
-    sub_path            = var.alertmanager_sub_path
-
-    pod_security_policy_annotations = jsonencode(var.alertmanager_pod_security_policy_annotations)
-
-    pdb_enable          = var.alertmanager_pdb_enable
-    pdb_max_unavailable = jsonencode(var.alertmanager_pdb_max_unavailable)
-
-    alertmanager_files = indent(2, var.alertmanager_files)
+    pushgateway_service_account_annotations = jsonencode(var.pushgateway_service_account_annotations)
+    server_service_account_annotations      = jsonencode(var.server_service_account_annotations)
   }
 
   pushgateway_values = {

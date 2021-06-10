@@ -33,6 +33,9 @@ locals {
     labels        = jsonencode(var.node_exporter_labels)
     node_selector = jsonencode(var.node_exporter_node_selector)
 
+    service_account             = var.node_exporter_service_account
+    service_account_annotations = jsonencode(var.node_exporter_service_account_annotations)
+
     security_context = coalesce(
       var.node_exporter_security_context_json,
       jsonencode(var.node_exporter_security_context),
