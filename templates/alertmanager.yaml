@@ -42,6 +42,9 @@ affinity: ${affinity}
 
 podAnnotations: ${annotations}
 
+# Ref: https://kubernetes.io/docs/tasks/run-application/configure-pdb/
+podDisruptionBudget: ${pdb}
+
 persistence:
   enabled: ${pv_enabled}
   ## Persistent Volume Storage Class

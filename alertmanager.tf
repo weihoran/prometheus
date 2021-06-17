@@ -52,6 +52,8 @@ locals {
     pv_size         = var.alertmanager_pv_size
     storage_class   = var.alertmanager_storage_class
 
+    pdb = jsonencode(var.alertmanager_pdb)
+
     config = indent(2, var.alertmanager_config)
 
     configmap_name              = var.configmap_name

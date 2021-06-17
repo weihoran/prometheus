@@ -49,6 +49,7 @@ No modules.
 | <a name="input_alertmanager_ingress_hosts"></a> [alertmanager\_ingress\_hosts](#input\_alertmanager\_ingress\_hosts) | List of Hosts for Alertmanager ingress | `list` | `[]` | no |
 | <a name="input_alertmanager_ingress_tls"></a> [alertmanager\_ingress\_tls](#input\_alertmanager\_ingress\_tls) | TLS configurationf or Alertmanager ingress | `list` | `[]` | no |
 | <a name="input_alertmanager_node_selector"></a> [alertmanager\_node\_selector](#input\_alertmanager\_node\_selector) | Node selector for alertmanager pods | `map` | `{}` | no |
+| <a name="input_alertmanager_pdb"></a> [alertmanager\_pdb](#input\_alertmanager\_pdb) | PDB for Alertmanager | `map` | <pre>{<br>  "maxUnavailable": 1<br>}</pre> | no |
 | <a name="input_alertmanager_pull_policy"></a> [alertmanager\_pull\_policy](#input\_alertmanager\_pull\_policy) | Image pull policy for Alertmanager | `string` | `"IfNotPresent"` | no |
 | <a name="input_alertmanager_pv_access_modes"></a> [alertmanager\_pv\_access\_modes](#input\_alertmanager\_pv\_access\_modes) | alertmanager data Persistent Volume access modes | `list` | <pre>[<br>  "ReadWriteOnce"<br>]</pre> | no |
 | <a name="input_alertmanager_pv_enabled"></a> [alertmanager\_pv\_enabled](#input\_alertmanager\_pv\_enabled) | Enable persistent volume on Alertmanager | `string` | `"true"` | no |
@@ -65,7 +66,7 @@ No modules.
 | <a name="input_alertmanager_service_port"></a> [alertmanager\_service\_port](#input\_alertmanager\_service\_port) | Service port for Alertmanager | `number` | `80` | no |
 | <a name="input_alertmanager_service_type"></a> [alertmanager\_service\_type](#input\_alertmanager\_service\_type) | Type of service for Alertmanager | `string` | `"ClusterIP"` | no |
 | <a name="input_alertmanager_storage_class"></a> [alertmanager\_storage\_class](#input\_alertmanager\_storage\_class) | Storage class for alertmanager PV. If set to "-", storageClassName: "", which disables dynamic provisioning | `string` | `""` | no |
-| <a name="input_alertmanager_tag"></a> [alertmanager\_tag](#input\_alertmanager\_tag) | Tag for Alertmanager Docker Image | `string` | `"v0.16.1"` | no |
+| <a name="input_alertmanager_tag"></a> [alertmanager\_tag](#input\_alertmanager\_tag) | Tag for Alertmanager Docker Image | `string` | `"v0.22.2"` | no |
 | <a name="input_alertmanager_tolerations"></a> [alertmanager\_tolerations](#input\_alertmanager\_tolerations) | Tolerations for Alertmanager | `list` | `[]` | no |
 | <a name="input_chart_name"></a> [chart\_name](#input\_chart\_name) | Helm chart name to provision | `string` | `"prometheus"` | no |
 | <a name="input_chart_namespace"></a> [chart\_namespace](#input\_chart\_namespace) | Namespace to install the chart into | `string` | `"default"` | no |

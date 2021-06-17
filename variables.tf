@@ -289,6 +289,11 @@ variable "alertmanager_service_type" {
   default     = "ClusterIP"
 }
 
+variable "alertmanager_pdb" {
+  description = "PDB for Alertmanager"
+  default     = { maxUnavailable = 1 }
+}
+
 variable "alertmanager_config" {
   description = "Additional ConfigMap entries for Alertmanager in YAML string"
   sensitive   = true
