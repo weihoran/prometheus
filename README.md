@@ -9,14 +9,14 @@ This module makes use of the
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12 |
-| helm | >= 3.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| helm | >= 1.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.0 |
 
 ## Modules
 
@@ -187,6 +187,7 @@ No modules.
 | <a name="input_pushgateway_tag"></a> [pushgateway\_tag](#input\_pushgateway\_tag) | Tag for Pushgateway Docker Image | `string` | `"v0.6.0"` | no |
 | <a name="input_pushgateway_tolerations"></a> [pushgateway\_tolerations](#input\_pushgateway\_tolerations) | Tolerations for Pushgateway | `list` | `[]` | no |
 | <a name="input_release_name"></a> [release\_name](#input\_release\_name) | Helm release name for Prometheus | `string` | `"prometheus"` | no |
+| <a name="input_scrape_drop_pod_containers_without_port"></a> [scrape\_drop\_pod\_containers\_without\_port](#input\_scrape\_drop\_pod\_containers\_without\_port) | For pod targets, Prometheus generates a target per pod per container per port. For containers without a port, it leave the target in without any port. Configure to drop these targets | `bool` | `false` | no |
 | <a name="input_scrape_skip_apiserver_tls_verify"></a> [scrape\_skip\_apiserver\_tls\_verify](#input\_scrape\_skip\_apiserver\_tls\_verify) | Skip verifying TLS Certificate for Kubernetes Master Server Scrape target. Warning: This is insecure | `bool` | `false` | no |
 | <a name="input_scrape_skip_nodes_tls_verify"></a> [scrape\_skip\_nodes\_tls\_verify](#input\_scrape\_skip\_nodes\_tls\_verify) | Skip verifying TLS Certificate for Kubernetes Nodes Scrape target. Warning: This is insecure | `bool` | `false` | no |
 | <a name="input_server_additional_global"></a> [server\_additional\_global](#input\_server\_additional\_global) | YAML string for additional global configuration for Prometheus Server | `string` | `""` | no |

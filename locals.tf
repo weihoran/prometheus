@@ -20,5 +20,7 @@ locals {
   scrape_config_values = {
     scrape_skip_apiserver_tls_verify = var.scrape_skip_apiserver_tls_verify
     scrape_skip_nodes_tls_verify     = var.scrape_skip_nodes_tls_verify
+
+    drop_pod_containers_without_port = var.scrape_drop_pod_containers_without_port
   }
 }

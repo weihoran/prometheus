@@ -1253,6 +1253,12 @@ variable "scrape_skip_nodes_tls_verify" {
   default     = false
 }
 
+variable "scrape_drop_pod_containers_without_port" {
+  description = "For pod targets, Prometheus generates a target per pod per container per port. For containers without a port, it leave the target in without any port. Configure to drop these targets"
+  type        = bool
+  default     = false
+}
+
 ############################
 # Remote config
 ############################

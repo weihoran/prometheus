@@ -154,6 +154,12 @@
       action: replace
       target_label: __metrics_path__
       regex: (.+)
+    %{if drop_pod_containers_without_port }
+    # Drop containers without any port
+    - source_labels: [__meta_kubernetes_pod_container_port_number]
+      action: keep
+      regex: \d+
+    %{endif}
     - source_labels: [__address__, __meta_kubernetes_service_annotation_prometheus_io_port]
       action: replace
       target_label: __address__
@@ -265,6 +271,12 @@
       action: replace
       target_label: __metrics_path__
       regex: (.+)
+    %{if drop_pod_containers_without_port }
+    # Drop containers without any port
+    - source_labels: [__meta_kubernetes_pod_container_port_number]
+      action: keep
+      regex: \d+
+    %{endif}
     - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
       action: replace
       regex: ([^:]+)(?::\d+)?;(\d+)
