@@ -21,6 +21,7 @@ locals {
     scrape_skip_apiserver_tls_verify = var.scrape_skip_apiserver_tls_verify
     scrape_skip_nodes_tls_verify     = var.scrape_skip_nodes_tls_verify
 
-    drop_pod_containers_without_port = var.scrape_drop_pod_containers_without_port
+    drop_service_pod_containers_without_port = var.scrape_drop_service_pod_containers_without_port
+    drop_pod_containers_without_port         = var.scrape_drop_pod_containers_without_port
   }
 }

@@ -154,7 +154,7 @@
       action: replace
       target_label: __metrics_path__
       regex: (.+)
-    %{if drop_pod_containers_without_port }
+    %{if drop_service_pod_containers_without_port }
     # Drop containers without any port
     - source_labels: [__meta_kubernetes_pod_container_port_number]
       action: keep

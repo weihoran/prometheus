@@ -1259,6 +1259,12 @@ variable "scrape_drop_pod_containers_without_port" {
   default     = false
 }
 
+variable "scrape_drop_service_pod_containers_without_port" {
+  description = "For service targets, Prometheus generates a target per service per pod per container per port. For containers without a port, it leave the target in without any port. Configure to drop these targets"
+  type        = bool
+  default     = false
+}
+
 ############################
 # Remote config
 ############################
