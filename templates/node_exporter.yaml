@@ -10,6 +10,8 @@ service:
   type: ${service_type}
   port: ${service_port}
   targetPort: 9100
+  nodePort:
+  listenOnAllInterfaces: true
   annotations: ${service_annotations}
 
 prometheus:
@@ -72,7 +74,7 @@ hostRootFsMount: true
 
 ## Assign a group of affinity scheduling rules
 ##
-affinity: {}
+affinity: ${affinity}
 #   nodeAffinity:
 #     requiredDuringSchedulingIgnoredDuringExecution:
 #       nodeSelectorTerms:

@@ -8,6 +8,10 @@ image:
 
 extraArgs: ${extra_args}
 
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
@@ -18,6 +22,28 @@ serviceAccount:
   name: ${service_account}
 
 podSecurityContext: ${security_context}
+
+securityContext: ${container_security_context}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsUser: 65534
+  # runAsNonRoot: true
+  # runAsGroup: 65534
+
+dnsConfig: {}
+  # nameservers:
+  #   - 1.2.3.4
+  # searches:
+  #   - ns1.svc.cluster-domain.example
+  #   - my.dns.search.suffix
+  # options:
+  #   - name: ndots
+  #     value: "2"
+  #   - name: edns0
+
+additionalPeers: []
 
 service:
   annotations: ${service_annotations}
@@ -39,6 +65,9 @@ nodeSelector: ${node_selector}
 tolerations: ${tolerations}
 
 affinity: ${affinity}
+
+statefulSet:
+  annotations: ${statefulset_annotations}
 
 podAnnotations: ${annotations}
 

@@ -98,7 +98,7 @@ variable "configmap_image_repo" {
 
 variable "configmap_image_tag" {
   description = "Docker image tag for ConfigMap Reload"
-  default     = "v0.2.2"
+  default     = "v0.5.0"
 }
 
 variable "configmap_pull_policy" {
@@ -156,7 +156,7 @@ variable "alertmanager_chart_namespace" {
 
 variable "alertmanager_repository" {
   description = "Docker repository for Alert Manager"
-  default     = "prom/alertmanager"
+  default     = "quay.io/prometheus/alertmanager"
 }
 
 variable "alertmanager_tag" {
@@ -202,6 +202,11 @@ variable "alertmanager_ingress_hosts" {
 variable "alertmanager_ingress_tls" {
   description = "TLS configurationf or Alertmanager ingress"
   default     = []
+}
+
+variable "alertmanager_statefulset_annotations" {
+  description = "Annotations for Alertmanager statefulSet"
+  default     = {}
 }
 
 variable "alertmanager_annotations" {
@@ -258,20 +263,23 @@ variable "alertmanager_resources" {
 }
 
 variable "alertmanager_security_context" {
-  description = <<EOF
-  Security context for alertmanager pods defined as a map which will be serialized to JSON.
-  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and
-  this will not work for fields like `runAsUser`. Specify a JSON string with
-  `alertmanager_security_context_json` instead
-EOF
-
-
-  default = {}
+  description = "Security context for alertmanager pods defined as a map which will be serialized to JSON."
+  default = {
+    fsGroup = 65534
+    seccompProfile = {
+      type = "RuntimeDefault"
+    }
+  }
 }
 
-variable "alertmanager_security_context_json" {
-  description = "JSON string for security context for alertmanager pods"
-  default     = ""
+variable "alertmanager_container_security_context" {
+  description = "Security context for alertmanager containers defined as a map which will be serialized to JSON."
+  default = {
+    allowPrivilegeEscalation = false
+    runAsGroup               = 65534
+    runAsNonRoot             = true
+    runAsUser                = 65534
+  }
 }
 
 variable "alertmanager_service_annotations" {
@@ -291,7 +299,10 @@ variable "alertmanager_service_type" {
 
 variable "alertmanager_pdb" {
   description = "PDB for Alertmanager"
-  default     = { maxUnavailable = 1 }
+
+  default = {
+    maxUnavailable = 1
+  }
 }
 
 variable "alertmanager_config" {
@@ -317,7 +328,6 @@ route:
   receiver: default-receiver
   repeat_interval: 3h
 EOF
-
 }
 
 ################################
@@ -360,7 +370,7 @@ variable "kube_state_metrics_repository" {
 
 variable "kube_state_metrics_tag" {
   description = "Tag for Kube State Metrics Docker Image"
-  default     = "v2.0.0"
+  default     = "v2.1.0"
 }
 
 variable "kube_state_metrics_pull_policy" {
@@ -429,20 +439,22 @@ variable "kube_state_metrics_resources" {
 }
 
 variable "kube_state_metrics_security_context" {
-  description = <<EOF
-  Security context for kube_state_metrics pods defined as a map which will be serialized to JSON.
-  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and
-  this will not work for fields like `runAsUser`. Specify a JSON string with
-  `kube_state_metrics_security_context_json` instead
-EOF
+  description = "Security context for kube_state_metrics pods defined as a map which will be serialized to JSON."
 
-
-  default = {}
+  default = {
+    enabled    = true
+    runAsGroup = 65534
+    runAsUser  = 65534
+    fsGroup    = 65534
+    seccompProfile = {
+      type = "RuntimeDefault"
+    }
+  }
 }
 
-variable "kube_state_metrics_security_context_json" {
-  description = "JSON string for security context for kube_state_metrics pods"
-  default     = ""
+variable "kube_state_metrics_container_security_context" {
+  description = "Security context for kube_state_metrics containers defined as a map which will be serialized to JSON."
+  default     = {}
 }
 
 variable "kube_state_metrics_service_annotations" {
@@ -476,11 +488,14 @@ variable "kube_state_metrics_service_type" {
 variable "kube_state_metrics_pod_security_policy_annotations" {
   description = "PodSecurityPolicy annotations for Kube State Metrics"
   default = {
-    "seccomp.security.alpha.kubernetes.io/allowedProfileNames" = "docker/default,runtime/default"
     "apparmor.security.beta.kubernetes.io/allowedProfileNames" = "runtime/default"
-    "seccomp.security.alpha.kubernetes.io/defaultProfileName"  = "runtime/default"
     "apparmor.security.beta.kubernetes.io/defaultProfileName"  = "runtime/default"
   }
+}
+
+variable "kube_state_metrics_pod_security_policy_additional_volumes" {
+  description = "PodSecurityPolicy additional volumes for Kube State Metrics"
+  default     = []
 }
 
 variable "kube_state_metrics_pdb" {
@@ -493,6 +508,21 @@ variable "kube_state_metrics_host_network" {
   default     = false
 }
 
+variable "kube_state_metrics_metric_allow_list" {
+  description = "This list of metrics to be exposed for KSM"
+  default     = []
+}
+
+variable "kube_state_metrics_metric_deny_list" {
+  description = "This list of metrics not to be enabled for KSM"
+  default     = []
+}
+
+variable "kube_state_metrics_metric_label_allow_list" {
+  description = "This list of additional Kubernetes label keys that will be used in the resource's lables metric"
+  default     = []
+}
+
 variable "kube_state_metrics_collection_namespace" {
   description = "Specific namespaces to collect metrics for"
   default     = ""
@@ -500,37 +530,7 @@ variable "kube_state_metrics_collection_namespace" {
 
 variable "kube_state_metrics_collectors" {
   description = "Collectors for Kube state metrics"
-
-  default = {
-    certificatesigningrequests      = true
-    configmaps                      = true
-    cronjobs                        = true
-    daemonsets                      = true
-    deployments                     = true
-    endpoints                       = true
-    horizontalpodautoscalers        = true
-    ingresses                       = true
-    jobs                            = true
-    limitranges                     = true
-    mutatingwebhookconfigurations   = true
-    namespaces                      = true
-    networkpolicies                 = true
-    nodes                           = true
-    persistentvolumeclaims          = true
-    persistentvolumes               = true
-    poddisruptionbudgets            = true
-    pods                            = true
-    replicasets                     = true
-    replicationcontrollers          = true
-    resourcequotas                  = true
-    secrets                         = true
-    services                        = true
-    statefulsets                    = true
-    storageclasses                  = true
-    validatingwebhookconfigurations = true
-    verticalpodautoscalers          = true
-    volumeattachments               = true
-  }
+  default     = []
 }
 
 ################################
@@ -573,12 +573,12 @@ variable "node_exporter_host_network" {
 
 variable "node_exporter_repository" {
   description = "Docker repository for Node Exporter"
-  default     = "prom/node-exporter"
+  default     = "quay.io/prometheus/node-exporter"
 }
 
 variable "node_exporter_tag" {
   description = "Tag for Node Exporter Docker Image"
-  default     = "v0.17.0"
+  default     = "v1.2.0"
 }
 
 variable "node_exporter_pull_policy" {
@@ -631,26 +631,28 @@ variable "node_exporter_node_selector" {
   default     = {}
 }
 
+variable "node_exporter_affinity" {
+  description = "Affinity for node_exporter pods"
+  default     = {}
+}
+
 variable "node_exporter_resources" {
   description = "Resources for node_exporter"
   default     = {}
 }
 
 variable "node_exporter_security_context" {
-  description = <<EOF
-  Security context for node_exporter pods defined as a map which will be serialized to JSON.
-  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and
-  this will not work for fields like `runAsUser`. Specify a JSON string with
-  `node_exporter_security_context_json` instead
-EOF
-
-
-  default = {}
-}
-
-variable "node_exporter_security_context_json" {
-  description = "JSON string for security context for node_exporter pods"
-  default     = ""
+  description = "Security context for node_exporter pods defined as a map which will be serialized to JSON."
+  default = {
+    fsGroup            = 65534
+    runAsGroup         = 65534
+    runAsNonRoot       = true
+    runAsUser          = 65534
+    supplementalGroups = [0]
+    seccompProfile = {
+      type = "RuntimeDefault"
+    }
+  }
 }
 
 variable "node_exporter_service_annotations" {
@@ -701,12 +703,12 @@ variable "pushgateway_enable" {
 
 variable "pushgateway_repository" {
   description = "Docker repository for Pushgateway"
-  default     = "prom/pushgateway"
+  default     = "quay.io/prometheus/pushgateway"
 }
 
 variable "pushgateway_tag" {
   description = "Tag for Pushgateway Docker Image"
-  default     = "v0.6.0"
+  default     = "v1.4.1"
 }
 
 variable "pushgateway_pull_policy" {
@@ -729,6 +731,16 @@ variable "pushgateway_extra_env" {
   default     = {}
 }
 
+variable "pushgateway_extra_init_containers" {
+  description = "Additional InitContainers to initialize the Pushgateway pod"
+  default     = []
+}
+
+variable "pushgateway_deployment_annotations" {
+  description = "Annotations to be added to Pushgateway deployment"
+  default     = {}
+}
+
 variable "pushgateway_ingress_enabled" {
   description = "Enable ingress for Pushgateway"
   default     = "false"
@@ -746,6 +758,16 @@ variable "pushgateway_ingress_extra_labels" {
 
 variable "pushgateway_ingress_hosts" {
   description = "List of Hosts for Pushgateway ingress"
+  default     = []
+}
+
+variable "pushgateway_ingress_path" {
+  description = "Path of Pushgateway ingress"
+  default     = "/"
+}
+
+variable "pushgateway_ingress_extra_paths" {
+  description = "Extra paths to prepend to every host configuration for Pushgateway ingress"
   default     = []
 }
 
@@ -808,20 +830,15 @@ variable "pushgateway_resources" {
 }
 
 variable "pushgateway_security_context" {
-  description = <<EOF
-  Security context for pushgateway pods defined as a map which will be serialized to JSON.
-  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and
-  this will not work for fields like `runAsUser`. Specify a JSON string with
-  `pushgateway_security_context_json` instead
-EOF
+  description = "Security context for pushgateway pods defined as a map which will be serialized to JSON"
 
-
-  default = {}
-}
-
-variable "pushgateway_security_context_json" {
-  description = "JSON string for security context for pushgateway pods"
-  default     = ""
+  default = {
+    runAsUser    = 65534
+    runAsNonRoot = true
+    seccompProfile = {
+      type = "RuntimeDefault"
+    }
+  }
 }
 
 variable "pushgateway_service_annotations" {
@@ -870,9 +887,7 @@ variable "pushgateway_service_type" {
 variable "pushgateway_pod_security_policy_annotations" {
   description = "PodSecurityPolicy annotations for Pushgateway"
   default = {
-    "seccomp.security.alpha.kubernetes.io/allowedProfileNames" = "docker/default,runtime/default"
     "apparmor.security.beta.kubernetes.io/allowedProfileNames" = "runtime/default"
-    "seccomp.security.alpha.kubernetes.io/defaultProfileName"  = "runtime/default"
     "apparmor.security.beta.kubernetes.io/defaultProfileName"  = "runtime/default"
   }
 }
@@ -897,12 +912,12 @@ variable "server_enable" {
 
 variable "server_repository" {
   description = "Docker repository for server"
-  default     = "prom/prometheus"
+  default     = "quay.io/prometheus/prometheus"
 }
 
 variable "server_tag" {
   description = "Tag for server Docker Image"
-  default     = "v2.8.1"
+  default     = "v2.28.1"
 }
 
 variable "server_pull_policy" {
@@ -923,6 +938,11 @@ variable "server_priority_class_name" {
 variable "server_enable_service_links" {
   description = "EnableServiceLinks indicates whether information about services should be injected into pod's environment variables, matching the syntax of Docker links."
   default     = true
+}
+
+variable "server_host_network_enabled" {
+  description = "Required for use in managed kubernetes clusters (such as AWS EKS) with custom CNI (such as calico), because control-plane managed by AWS cannot communicate with pods' IP CIDR and admission webhooks are not working"
+  default     = false
 }
 
 variable "server_extra_args" {
@@ -955,29 +975,49 @@ variable "server_ingress_hosts" {
   default     = []
 }
 
+variable "server_ingress_path" {
+  description = "Path of server ingress"
+  default     = "/"
+}
+
+variable "server_ingress_extra_paths" {
+  description = "Extra paths to prepend to every host configuration for server ingress"
+  default     = []
+}
+
 variable "server_ingress_tls" {
   description = "TLS configurationf or server ingress"
   default     = []
 }
 
 variable "server_annotations" {
-  description = "Annotations for server pods"
+  description = "Annotations to be added to Prometheus server pods"
   default     = {}
 }
 
 variable "server_tolerations" {
-  description = "Tolerations for server"
+  description = "Node tolerations for server scheduling to nodes with taints"
   default     = []
 }
 
 variable "server_node_selector" {
-  description = "Node selector for server pods"
+  description = "Node labels for Prometheus server pod assignment"
   default     = {}
 }
 
 variable "server_affinity" {
   description = "Affinity for server pods"
   default     = {}
+}
+
+variable "server_pod_labels" {
+  description = "Labels to be added to Prometheus server pods"
+  default     = {}
+}
+
+variable "server_host_aliases" {
+  description = "hostAliases allows adding entries to /etc/hosts inside the containers"
+  default     = []
 }
 
 variable "server_pv_enabled" {
@@ -1008,6 +1048,26 @@ variable "server_pv_size" {
   default     = "8Gi"
 }
 
+variable "server_emptydir_size_limit" {
+  description = "Prometheus server emptyDir volume size limit"
+  default     = ""
+}
+
+variable "server_vpa_enabled" {
+  description = "If true a VPA object will be created for the controller (either StatefulSet or Deployemnt)"
+  default     = false
+}
+
+variable "server_vpa_update_mode" {
+  description = "server VPA updateMode"
+  default     = ""
+}
+
+variable "server_vpa_container_policies" {
+  description = "server VPA containerPolicies"
+  default     = {}
+}
+
 variable "server_replica" {
   description = "Number of replicas for server"
   default     = 1
@@ -1019,35 +1079,29 @@ variable "server_resources" {
 }
 
 variable "server_security_context" {
-  description = <<EOF
-  Security context for server pods defined as a map which will be serialized to JSON.
-  Due to limitations with Terraform 0.11 and below, integers are serialized as strings in JSON and
-  this will not work for fields like `runAsUser`. Specify a JSON string with
-  `server_security_context_json` instead
-EOF
+  description = "Security context for server pods defined as a map which will be serialized to JSON"
 
-
-  default = {}
-}
-
-variable "server_security_context_json" {
-  description = "JSON string for security context for server pods"
-  default     = ""
+  default = {
+    runAsUser    = 65534
+    runAsNonRoot = true
+    runAsGroup   = 65534
+    fsGroup      = 65534
+    seccompProfile = {
+      type = "RuntimeDefault"
+    }
+  }
 }
 
 variable "server_pod_security_policy_annotations" {
   description = "PodSecurityPolicy annotations for server"
   default = {
-    "seccomp.security.alpha.kubernetes.io/allowedProfileNames" = "docker/default,runtime/default"
     "apparmor.security.beta.kubernetes.io/allowedProfileNames" = "runtime/default"
-    "seccomp.security.alpha.kubernetes.io/defaultProfileName"  = "runtime/default"
     "apparmor.security.beta.kubernetes.io/defaultProfileName"  = "runtime/default"
   }
 }
 
 variable "server_service_annotations" {
   description = "Annotations for server service"
-
   default = {
     "prometheus.io/probe" = "server"
   }
@@ -1079,13 +1133,28 @@ variable "server_service_lb_source_ranges" {
 }
 
 variable "server_service_port" {
-  description = "Service port for server"
+  description = "Service port for Prometheus server"
   default     = 9091
 }
 
+variable "server_service_session_affinity" {
+  description = "Service sessionAffinity for Prometheus server"
+  default     = "None"
+}
+
 variable "server_service_type" {
-  description = "Type of service for server"
+  description = "Type of service for Prometheus server"
   default     = "ClusterIP"
+}
+
+variable "server_service_grpc_enabled" {
+  description = "Enable gRPC port on service to allow auto discovery with thanos-querier"
+  default     = false
+}
+
+variable "server_service_grpc_port" {
+  description = "gRPC servicePort for server service"
+  default     = "10901"
 }
 
 variable "server_prefix_url" {
@@ -1143,14 +1212,46 @@ variable "server_extra_secret_mounts" {
   default     = []
 }
 
+variable "server_extra_init_containers" {
+  description = "Additional InitContainers to initialize the pod"
+  default     = []
+}
+
+variable "server_deployment_annotations" {
+  description = "Annotations to be added to server deployment"
+  default     = {}
+}
+
 variable "server_statefulset_annotations" {
-  description = "Annotations for server StatefulSet"
+  description = "Annotations to be added to server statefulSet"
+  default     = {}
+}
+
+variable "server_statefulset_labels" {
+  description = "Labels to be added to Prometheus server statefulSet"
   default     = {}
 }
 
 variable "server_data_retention" {
   description = "Prometheus data retention period (i.e 360h)"
   default     = ""
+}
+
+variable "server_pod_probes" {
+  description = "Prometheus server readiness and liveness probe initial delay and timeout"
+
+  default = <<EOF
+readinessProbeInitialDelay: 30
+readinessProbePeriodSeconds: 5
+readinessProbeTimeout: 10
+readinessProbeFailureThreshold: 3
+readinessProbeSuccessThreshold: 1
+livenessProbeInitialDelay: 30
+livenessProbePeriodSeconds: 15
+livenessProbeTimeout: 10
+livenessProbeFailureThreshold: 3
+livenessProbeSuccessThreshold: 1
+EOF
 }
 
 variable "server_termination_grace_seconds" {
@@ -1168,6 +1269,16 @@ variable "server_headless_labels" {
   default     = {}
 }
 
+variable "server_headless_grpc_enabled" {
+  description = "Enable gRPC port on service to allow auto discovery with thanos-querier"
+  default     = false
+}
+
+variable "server_headless_grpc_port" {
+  description = "gRPC servicePort for server headless service"
+  default     = 10901
+}
+
 variable "server_pdb_enable" {
   description = "Enable PDB"
   default     = true
@@ -1176,26 +1287,6 @@ variable "server_pdb_enable" {
 variable "server_pdb_max_unavailable" {
   description = "Max unavailable pods"
   default     = 1
-}
-
-variable "server_readiness_probe_initial_delay" {
-  description = "Initial delay before the probe starts checking. You might need to increase this for Prometheus to repair the TSDB servers if your pods keeps getting killed by probes during startup."
-  default     = 30
-}
-
-variable "server_readiness_probe_timeout" {
-  description = "Number of seconds before a probe fails due to timeout"
-  default     = 10
-}
-
-variable "server_liveness_probe_initial_delay" {
-  description = "Initial delay before the probe starts checking. You might need to increase this for Prometheus to repair the TSDB servers if your pods keeps getting killed by probes during startup."
-  default     = 30
-}
-
-variable "server_liveness_probe_timeout" {
-  description = "Number of seconds before a probe fails due to timeout"
-  default     = 10
 }
 
 variable "server_alerts" {
@@ -1214,7 +1305,6 @@ variable "server_alerts" {
 #         description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
 #         summary: 'Instance {{ $labels.instance }} down'
 EOF
-
 }
 
 variable "server_rules" {
@@ -1227,7 +1317,6 @@ variable "server_rules" {
 #     - record: k8s_container_oom
 #       expr: increase(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[2m]) and on(pod) increase(kube_pod_container_status_restarts_total[2m])
 EOF
-
 }
 
 variable "server_additional_global" {
@@ -1238,6 +1327,11 @@ variable "server_additional_global" {
 variable "server_config_override" {
   description = "Overriding the Prometheus server config file in YAML"
   default     = ""
+}
+
+variable "server_alert_managers_configs" {
+  description = "Prometheus AlertManager configuration"
+  default     = []
 }
 
 #################################

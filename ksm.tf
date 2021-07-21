@@ -31,10 +31,8 @@ locals {
     node_selector = jsonencode(var.kube_state_metrics_node_selector)
     affinity      = jsonencode(var.kube_state_metrics_affinity)
 
-    security_context = coalesce(
-      var.kube_state_metrics_security_context_json,
-      jsonencode(var.kube_state_metrics_security_context),
-    )
+    security_context           = jsonencode(var.kube_state_metrics_security_context)
+    container_security_context = jsonencode(var.kube_state_metrics_container_security_context)
 
     priority_class_name = var.kube_state_metrics_priority_class_name
     extra_args          = jsonencode(var.kube_state_metrics_extra_args)
@@ -51,8 +49,13 @@ locals {
     pdb          = jsonencode(var.kube_state_metrics_pdb)
     host_network = var.kube_state_metrics_host_network
 
-    psp_enable      = var.pod_security_policy_enable
-    psp_annotations = jsonencode(var.kube_state_metrics_pod_security_policy_annotations)
+    psp_enable         = var.pod_security_policy_enable
+    psp_annotations    = jsonencode(var.kube_state_metrics_pod_security_policy_annotations)
+    additional_volumes = jsonencode(var.kube_state_metrics_pod_security_policy_additional_volumes)
+
+    metric_allow_list       = jsonencode(var.kube_state_metrics_metric_allow_list)
+    metric_deny_list        = jsonencode(var.kube_state_metrics_metric_deny_list)
+    metric_label_allow_list = jsonencode(var.kube_state_metrics_metric_label_allow_list)
 
     collection_namespace = var.kube_state_metrics_collection_namespace
     collectors           = jsonencode(var.kube_state_metrics_collectors)

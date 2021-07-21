@@ -51,18 +51,17 @@ locals {
     replica   = var.pushgateway_replica
     resources = jsonencode(var.pushgateway_resources)
 
-    annotations   = jsonencode(var.pushgateway_annotations)
-    tolerations   = jsonencode(var.pushgateway_tolerations)
-    node_selector = jsonencode(var.pushgateway_node_selector)
+    annotations      = jsonencode(var.pushgateway_annotations)
+    tolerations      = jsonencode(var.pushgateway_tolerations)
+    node_selector    = jsonencode(var.pushgateway_node_selector)
+    security_context = jsonencode(var.pushgateway_security_context)
 
-    security_context = coalesce(
-      var.pushgateway_security_context_json,
-      jsonencode(var.pushgateway_security_context),
-    )
+    deployment_annotations = jsonencode(var.pushgateway_deployment_annotations)
 
-    priority_class_name = var.pushgateway_priority_class_name
-    extra_args          = jsonencode(var.pushgateway_extra_args)
-    extra_env           = jsonencode(var.pushgateway_extra_env)
+    priority_class_name   = var.pushgateway_priority_class_name
+    extra_args            = jsonencode(var.pushgateway_extra_args)
+    extra_env             = jsonencode(var.pushgateway_extra_env)
+    extra_init_containers = jsonencode(var.pushgateway_extra_init_containers)
 
     service_annotations      = jsonencode(var.pushgateway_service_annotations)
     service_labels           = jsonencode(var.pushgateway_service_labels)
@@ -77,6 +76,8 @@ locals {
     ingress_annotations  = jsonencode(var.pushgateway_ingress_annotations)
     ingress_extra_labels = jsonencode(var.pushgateway_ingress_extra_labels)
     ingress_hosts        = jsonencode(var.pushgateway_ingress_hosts)
+    ingress_path         = var.pushgateway_ingress_path
+    ingress_extra_paths  = jsonencode(var.pushgateway_ingress_extra_paths)
     ingress_tls          = jsonencode(var.pushgateway_ingress_tls)
 
     pv_enabled        = var.pushgateway_pv_enabled
@@ -104,35 +105,42 @@ locals {
     resources = jsonencode(var.server_resources)
 
     enable_service_links = var.server_enable_service_links
+    host_network_enabled = var.server_host_network_enabled
 
-    annotations   = jsonencode(var.server_annotations)
-    tolerations   = jsonencode(var.server_tolerations)
-    node_selector = jsonencode(var.server_node_selector)
-    affinity      = jsonencode(var.server_affinity)
+    annotations      = jsonencode(var.server_annotations)
+    tolerations      = jsonencode(var.server_tolerations)
+    node_selector    = jsonencode(var.server_node_selector)
+    affinity         = jsonencode(var.server_affinity)
+    pod_labels       = jsonencode(var.server_pod_labels)
+    host_aliases     = jsonencode(var.server_host_aliases)
+    security_context = jsonencode(var.server_security_context)
 
-    security_context = coalesce(
-      var.server_security_context_json,
-      jsonencode(var.server_security_context),
-    )
-
-    statefulset_annotations   = jsonencode(var.server_statefulset_annotations)
+    pod_probes                = var.server_pod_probes
     termination_grace_seconds = var.server_termination_grace_seconds
 
     prefix_url = var.server_prefix_url
     base_url   = var.server_base_url
 
     priority_class_name = var.server_priority_class_name
-    extra_args          = jsonencode(var.server_extra_args)
-    extra_env           = jsonencode(var.server_extra_env)
-    extra_volume_mounts = jsonencode(var.server_extra_volume_mounts)
+
+    deployment_annotations  = jsonencode(var.server_deployment_annotations)
+    statefulset_annotations = jsonencode(var.server_statefulset_annotations)
+    statefulset_labels      = jsonencode(var.server_statefulset_labels)
+
+    extra_args            = jsonencode(var.server_extra_args)
+    extra_init_containers = jsonencode(var.server_extra_init_containers)
+    extra_env             = jsonencode(var.server_extra_env)
+    extra_volume_mounts   = jsonencode(var.server_extra_volume_mounts)
 
     extra_volumes          = jsonencode(var.server_extra_volumes)
     extra_host_path_mounts = jsonencode(var.server_extra_host_path_mounts)
     extra_configmap_mounts = jsonencode(var.server_extra_configmap_mounts)
     extra_secret_mounts    = jsonencode(var.server_extra_secret_mounts)
 
-    headless_annotations = jsonencode(var.server_headless_annotations)
-    headless_labels      = jsonencode(var.server_headless_labels)
+    headless_annotations  = jsonencode(var.server_headless_annotations)
+    headless_labels       = jsonencode(var.server_headless_labels)
+    headless_grpc_enabled = var.server_headless_grpc_enabled
+    headless_grpc_port    = var.server_headless_grpc_port
 
     service_annotations      = jsonencode(var.server_service_annotations)
     service_labels           = jsonencode(var.server_service_labels)
@@ -140,13 +148,18 @@ locals {
     service_external_ips     = jsonencode(var.server_service_external_ips)
     service_lb_ip            = jsonencode(var.server_service_lb_ip)
     service_lb_source_ranges = jsonencode(var.server_service_lb_source_ranges)
+    service_session_affinity = jsonencode(var.server_service_session_affinity)
     service_port             = var.server_service_port
     service_type             = var.server_service_type
+    service_grpc_enabled     = var.server_service_grpc_enabled
+    service_grpc_port        = var.server_service_grpc_port
 
     ingress_enabled      = var.server_ingress_enabled
     ingress_annotations  = jsonencode(var.server_ingress_annotations)
     ingress_extra_labels = jsonencode(var.server_ingress_extra_labels)
     ingress_hosts        = jsonencode(var.server_ingress_hosts)
+    ingress_path         = var.server_ingress_path
+    ingress_extra_paths  = jsonencode(var.server_ingress_extra_paths)
     ingress_tls          = jsonencode(var.server_ingress_tls)
 
     pv_enabled        = var.server_pv_enabled
@@ -154,6 +167,12 @@ locals {
     pv_annotations    = jsonencode(var.server_pv_annotations)
     pv_existing_claim = var.server_pv_existing_claim
     pv_size           = var.server_pv_size
+
+    vpa_enabled            = var.server_vpa_enabled
+    vpa_update_mode        = var.server_vpa_update_mode
+    vpa_container_policies = jsonencode(var.server_vpa_container_policies)
+
+    emptydir_size_limit = var.server_emptydir_size_limit
 
     extra_flags         = jsonencode(local.server_extra_flags)
     scrape_interval     = var.server_scrape_interval
@@ -181,6 +200,8 @@ locals {
       ]
     })) : ""
 
+    alert_managers_configs = jsonencode(var.server_alert_managers_configs)
+
     self_scrape_config = var.server_enable ? indent(6, yamlencode(local.self_scrape_config)) : ""
     scrape_configs     = var.server_enable ? indent(6, templatefile("${path.module}/templates/scrape_configs.yaml", local.scrape_config_values)) : ""
 
@@ -188,10 +209,5 @@ locals {
 
     pdb_enable          = var.server_pdb_enable
     pdb_max_unavailable = jsonencode(var.server_pdb_max_unavailable)
-
-    readiness_probe_initial_delay = var.server_readiness_probe_initial_delay
-    readiness_probe_timeout       = var.server_readiness_probe_timeout
-    liveness_probe_initial_delay  = var.server_liveness_probe_initial_delay
-    liveness_probe_timeout        = var.server_liveness_probe_timeout
   }
 }

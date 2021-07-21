@@ -32,14 +32,12 @@ locals {
     tolerations   = jsonencode(var.node_exporter_tolerations)
     labels        = jsonencode(var.node_exporter_labels)
     node_selector = jsonencode(var.node_exporter_node_selector)
+    affinity      = jsonencode(var.node_exporter_affinity)
 
     service_account             = var.node_exporter_service_account
     service_account_annotations = jsonencode(var.node_exporter_service_account_annotations)
 
-    security_context = coalesce(
-      var.node_exporter_security_context_json,
-      jsonencode(var.node_exporter_security_context),
-    )
+    security_context = jsonencode(var.node_exporter_security_context)
 
     host_path_mounts  = jsonencode(var.node_exporter_host_path_mounts)
     config_map_mounts = jsonencode(var.node_exporter_config_map_mounts)

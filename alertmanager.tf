@@ -26,15 +26,14 @@ locals {
     service_account             = var.alertmanager_service_account
     service_account_annotations = jsonencode(var.alertmanager_service_account_annotations)
 
-    annotations   = jsonencode(var.alertmanager_annotations)
-    tolerations   = jsonencode(var.alertmanager_tolerations)
-    node_selector = jsonencode(var.alertmanager_node_selector)
-    affinity      = jsonencode(var.alertmanager_affinity)
+    statefulset_annotations = jsonencode(var.alertmanager_statefulset_annotations)
+    annotations             = jsonencode(var.alertmanager_annotations)
+    tolerations             = jsonencode(var.alertmanager_tolerations)
+    node_selector           = jsonencode(var.alertmanager_node_selector)
+    affinity                = jsonencode(var.alertmanager_affinity)
 
-    security_context = coalesce(
-      var.alertmanager_security_context_json,
-      jsonencode(var.alertmanager_security_context),
-    )
+    security_context           = jsonencode(var.alertmanager_security_context)
+    container_security_context = jsonencode(var.alertmanager_container_security_context)
 
     extra_args = jsonencode(var.alertmanager_extra_args)
 

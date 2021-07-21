@@ -28,6 +28,10 @@ pushgateway:
   ## for example: persistence.file: /data/pushgateway.data
   extraArgs: ${extra_args}
 
+  ## Additional InitContainers to initialize the pod
+  ##
+  extraInitContainers: ${extra_init_containers}
+
   ingress:
     ## If true, pushgateway Ingress will be created
     ##
@@ -45,6 +49,18 @@ pushgateway:
     hosts: ${ingress_hosts}
     #   - pushgateway.domain.com
     #   - domain.com/pushgateway
+
+    path: ${ingress_path}
+
+    # pathType is only for k8s >= 1.18
+    pathType: Prefix
+
+    ## Extra paths to prepend to every host configuration. This is useful when working with annotation based services.
+    extraPaths: ${ingress_extra_paths}
+    # - path: /*
+    #   backend:
+    #     serviceName: ssl-redirect
+    #     servicePort: use-annotation
 
     ## pushgateway Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -85,6 +101,13 @@ pushgateway:
 
   replicaCount: ${replica}
 
+  ## Annotations to be added to deployment
+  ##
+  deploymentAnnotations: ${deployment_annotations}
+
+  ## PodDisruptionBudget settings
+  ## ref: https://kubernetes.io/docs/concepts/workloads/pods/disruptions/
+  ##
   podDisruptionBudget:
     enabled: ${pdb_enable}
     maxUnavailable: ${pdb_max_unavailable}
@@ -99,6 +122,18 @@ pushgateway:
     # requests:
     #   cpu: 10m
     #   memory: 32Mi
+
+  # Custom DNS configuration to be added to push-gateway pods
+  dnsConfig: {}
+    # nameservers:
+    #   - 1.2.3.4
+    # searches:
+    #   - ns1.svc.cluster-domain.example
+    #   - my.dns.search.suffix
+    # options:
+    #   - name: ndots
+    #     value: "2"
+    #   - name: edns0
 
   ## Security context to be added to push-gateway pods
   ##
