@@ -166,8 +166,8 @@ kubeconfig:
   # base64 encoded kube-config file
   secret:
 
-# Namespaces to be enabled for collecting resources. By default all namespaces are collected.
-namespaces: ${collection_namespace}
+# Comma-separated list of namespaces to be enabled for collecting resources. By default all namespaces are collected.
+namespaces: "${collection_namespace}"
 
 ## Override the deployment namespace
 ##
