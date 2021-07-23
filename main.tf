@@ -115,7 +115,7 @@ locals {
     host_aliases     = jsonencode(var.server_host_aliases)
     security_context = jsonencode(var.server_security_context)
 
-    pod_probes                = var.server_pod_probes
+    pod_probes                = yamlencode(var.server_pod_probes)
     termination_grace_seconds = var.server_termination_grace_seconds
 
     prefix_url = var.server_prefix_url

@@ -13,13 +13,13 @@ This module makes use of following charts:
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.14 |
-| <a name="requirement_helm"></a> [helm](#requirement\_helm) | ~> 2.1 |
+| <a name="requirement_helm"></a> [helm](#requirement\_helm) | >= 2.1 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_helm"></a> [helm](#provider\_helm) | 2.2.0 |
+| <a name="provider_helm"></a> [helm](#provider\_helm) | >= 2.1 |
 
 ## Modules
 
@@ -94,7 +94,7 @@ No modules.
 | <a name="input_kube_state_metrics_chart_repository"></a> [kube\_state\_metrics\_chart\_repository](#input\_kube\_state\_metrics\_chart\_repository) | Helm repository for the chart | `string` | `"https://prometheus-community.github.io/helm-charts"` | no |
 | <a name="input_kube_state_metrics_chart_version"></a> [kube\_state\_metrics\_chart\_version](#input\_kube\_state\_metrics\_chart\_version) | Version of Chart to install. Set to empty to install the latest version | `string` | `""` | no |
 | <a name="input_kube_state_metrics_collection_namespace"></a> [kube\_state\_metrics\_collection\_namespace](#input\_kube\_state\_metrics\_collection\_namespace) | Specific namespaces to collect metrics for | `string` | `""` | no |
-| <a name="input_kube_state_metrics_collectors"></a> [kube\_state\_metrics\_collectors](#input\_kube\_state\_metrics\_collectors) | Collectors for Kube state metrics | `list` | `[]` | no |
+| <a name="input_kube_state_metrics_collectors"></a> [kube\_state\_metrics\_collectors](#input\_kube\_state\_metrics\_collectors) | Collectors for Kube state metrics | `list` | <pre>[<br>  "certificatesigningrequests",<br>  "configmaps",<br>  "cronjobs",<br>  "daemonsets",<br>  "deployments",<br>  "endpoints",<br>  "horizontalpodautoscalers",<br>  "ingresses",<br>  "jobs",<br>  "limitranges",<br>  "mutatingwebhookconfigurations",<br>  "namespaces",<br>  "networkpolicies",<br>  "nodes",<br>  "persistentvolumeclaims",<br>  "persistentvolumes",<br>  "poddisruptionbudgets",<br>  "pods",<br>  "replicasets",<br>  "replicationcontrollers",<br>  "resourcequotas",<br>  "secrets",<br>  "services",<br>  "statefulsets",<br>  "storageclasses",<br>  "validatingwebhookconfigurations",<br>  "verticalpodautoscalers",<br>  "volumeattachments"<br>]</pre> | no |
 | <a name="input_kube_state_metrics_container_security_context"></a> [kube\_state\_metrics\_container\_security\_context](#input\_kube\_state\_metrics\_container\_security\_context) | Security context for kube\_state\_metrics containers defined as a map which will be serialized to JSON. | `map` | `{}` | no |
 | <a name="input_kube_state_metrics_enable"></a> [kube\_state\_metrics\_enable](#input\_kube\_state\_metrics\_enable) | Enable Kube State Metrics | `string` | `"true"` | no |
 | <a name="input_kube_state_metrics_extra_args"></a> [kube\_state\_metrics\_extra\_args](#input\_kube\_state\_metrics\_extra\_args) | Extra arguments for Kube State Metrics container | `map` | `{}` | no |
@@ -241,7 +241,7 @@ No modules.
 | <a name="input_server_pdb_enable"></a> [server\_pdb\_enable](#input\_server\_pdb\_enable) | Enable PDB | `bool` | `true` | no |
 | <a name="input_server_pdb_max_unavailable"></a> [server\_pdb\_max\_unavailable](#input\_server\_pdb\_max\_unavailable) | Max unavailable pods | `number` | `1` | no |
 | <a name="input_server_pod_labels"></a> [server\_pod\_labels](#input\_server\_pod\_labels) | Labels to be added to Prometheus server pods | `map` | `{}` | no |
-| <a name="input_server_pod_probes"></a> [server\_pod\_probes](#input\_server\_pod\_probes) | Prometheus server readiness and liveness probe initial delay and timeout | `string` | `"readinessProbeInitialDelay: 30\nreadinessProbePeriodSeconds: 5\nreadinessProbeTimeout: 10\nreadinessProbeFailureThreshold: 3\nreadinessProbeSuccessThreshold: 1\nlivenessProbeInitialDelay: 30\nlivenessProbePeriodSeconds: 15\nlivenessProbeTimeout: 10\nlivenessProbeFailureThreshold: 3\nlivenessProbeSuccessThreshold: 1\n"` | no |
+| <a name="input_server_pod_probes"></a> [server\_pod\_probes](#input\_server\_pod\_probes) | Prometheus server readiness and liveness probe initial delay and timeout | `map` | <pre>{<br>  "livenessProbeFailureThreshold": 3,<br>  "livenessProbeInitialDelay": 30,<br>  "livenessProbePeriodSeconds": 15,<br>  "livenessProbeSuccessThreshold": 1,<br>  "livenessProbeTimeout": 10,<br>  "readinessProbeFailureThreshold": 3,<br>  "readinessProbeInitialDelay": 30,<br>  "readinessProbePeriodSeconds": 5,<br>  "readinessProbeSuccessThreshold": 1,<br>  "readinessProbeTimeout": 10<br>}</pre> | no |
 | <a name="input_server_pod_security_policy_annotations"></a> [server\_pod\_security\_policy\_annotations](#input\_server\_pod\_security\_policy\_annotations) | PodSecurityPolicy annotations for server | `map` | <pre>{<br>  "apparmor.security.beta.kubernetes.io/allowedProfileNames": "runtime/default",<br>  "apparmor.security.beta.kubernetes.io/defaultProfileName": "runtime/default"<br>}</pre> | no |
 | <a name="input_server_prefix_url"></a> [server\_prefix\_url](#input\_server\_prefix\_url) | The URL prefix at which the container can be accessed. Useful in the case the '-web.external-url' includes a slug so that the various internal URLs are still able to access as they are in the default case. | `string` | `""` | no |
 | <a name="input_server_priority_class_name"></a> [server\_priority\_class\_name](#input\_server\_priority\_class\_name) | Priority Class Name for server pods | `string` | `""` | no |
