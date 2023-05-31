@@ -365,7 +365,7 @@ variable "kube_state_metrics_chart_namespace" {
 
 variable "kube_state_metrics_repository" {
   description = "Docker repository for Kube State Metrics"
-  default     = "k8s.gcr.io/kube-state-metrics/kube-state-metrics"
+  default     = "registry.k8s.io/kube-state-metrics/kube-state-metrics"
 }
 
 variable "kube_state_metrics_tag" {
