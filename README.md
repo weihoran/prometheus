@@ -1,12 +1,6 @@
 # Prometheus
 
-Deploys Prometheus and some supporting services on a Kubernetes cluster running in GCP.
-
-This module makes use of following charts:
-- [`prometheus`](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus).
-- [`prometheus-node-exporter`](https://github.com/prometheus-community/helm-charts/tree/main/charts/prometheus-node-exporter).
-- [`alertmanager`](https://github.com/prometheus-community/helm-charts/tree/main/charts/alertmanager).
-- [`kube-state-metrics`](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics).
+Deploys Prometheus and some supporting services on a Kubernetes cluster.
 
 ## Requirements
 
